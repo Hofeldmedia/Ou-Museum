@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Generic school placeholder badge">
+  <rect width="120" height="120" rx="60" fill="#2b2926"/>
+  <circle cx="60" cy="60" r="52" fill="none" stroke="#d7b56d" stroke-width="5" opacity="0.9"/>
+  <path d="M34 46h52l-26-16-26 16Z" fill="#f6efe1"/>
+  <path d="M42 50h36v28H42z" fill="#841617"/>
+  <path d="M36 82h48v8H36z" fill="#f6efe1"/>
+  <text x="60" y="70" text-anchor="middle" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#f6efe1">U</text>
+</svg>

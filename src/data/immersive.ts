@@ -1,0 +1,191 @@
+import type { MuseumArtifact, MuseumPath, RivalryProfile, SignatureMoment, TourChapter } from '../types/content';
+
+export const museumPaths: MuseumPath[] = [
+  { id: 'history', title: 'Learn the History', description: 'Start with the rise of OU football, then move into conferences and championships.', startScreen: 'hub' },
+  { id: 'players', title: 'Follow the Players', description: 'Begin in the Heisman Room and trace stars into featured exhibits.', startScreen: 'heismans' },
+  { id: 'coaches', title: 'Explore the Coaches', description: 'Enter through the leadership wing and connect systems to title eras.', startScreen: 'coaches' },
+  { id: 'conferences', title: 'Trace the Conferences', description: 'Walk the realignment map from the Plains to the SEC.', startScreen: 'map' },
+  { id: 'nfl', title: 'From Norman to the NFL', description: 'Follow the professional pipeline from OU Saturdays to NFL Sundays.', startScreen: 'nfl' },
+];
+
+export const tourChapters: TourChapter[] = [
+  {
+    id: 'rise',
+    title: 'Rise of OU Football',
+    screens: ['hub', 'coaches'],
+    narrative: 'The story opens in Norman, where regional ambition became a national standard.',
+    eraLabel: 'Foundation',
+    tone: 'archival',
+  },
+  {
+    id: 'conference-evolution',
+    title: 'Conference Evolution',
+    screens: ['map', 'timeline'],
+    narrative: 'The map tells a bigger story: geography, rivals, media, and identity kept shifting around OU.',
+    eraLabel: 'Big Six to SEC',
+    tone: 'sec',
+  },
+  {
+    id: 'championship-dynasties',
+    title: 'Championship Dynasties',
+    screens: ['championships', 'connections'],
+    narrative: 'Titles made OU more than a participant in college football history. They made the Sooners one of its authors.',
+    eraLabel: '1950-2000',
+    tone: 'dynasty',
+  },
+  {
+    id: 'legendary-players',
+    title: 'Legendary Players',
+    screens: ['heismans', 'baker', 'nfl'],
+    narrative: 'The players gave the program its faces, voices, swagger, and reach beyond Norman.',
+    eraLabel: 'Icons',
+    tone: 'modern',
+  },
+  {
+    id: 'modern-transition',
+    title: 'Modern Era and SEC Transition',
+    screens: ['venables', 'rivalries', 'summary'],
+    narrative: 'The final gallery looks forward: new rivals, new stakes, and the same demand to matter nationally.',
+    eraLabel: 'SEC Era',
+    tone: 'sec',
+  },
+];
+
+export const artifacts: MuseumArtifact[] = [
+  {
+    id: 'ticket-1955-orange-bowl',
+    title: '1955 Orange Bowl Ticket',
+    category: 'Ticket Stub',
+    era: 'Wilkinson Dynasty',
+    summary: 'A small paper doorway into the perfect-season mythology.',
+    context: 'OU’s Orange Bowl victory over Maryland helped complete the 1955 title claim.',
+    significance: 'Artifacts like tickets make national titles feel physical: a place, a night, a crowd, a memory.',
+    relatedLinks: [{ type: 'championship', id: 'title-1955', label: '1955 title season' }],
+  },
+  {
+    id: 'newspaper-47-streak',
+    title: '47-Game Streak Headline',
+    category: 'Newspaper',
+    era: '1953-1957',
+    summary: 'A headline from the run that made Oklahoma sound inevitable.',
+    context: 'The streak became one of college football’s most durable records.',
+    significance: 'It turned week-to-week winning into a national identity.',
+    relatedLinks: [{ type: 'assessment', id: 'timeline', label: 'Place it on the timeline' }],
+  },
+  {
+    id: 'wishbone-playbook',
+    title: 'Wishbone Playbook Sheet',
+    category: 'Playbook',
+    era: 'Switzer Era',
+    summary: 'A diagram of movement, speed, and pressure.',
+    context: 'The wishbone made OU feel different: relentless, horizontal, and explosive.',
+    significance: 'Scheme became culture during the Big Eight years.',
+    relatedLinks: [{ type: 'coach', id: 'barry-switzer', label: 'Barry Switzer' }],
+  },
+  {
+    id: 'baker-flag',
+    title: 'Baker Mayfield Flag Moment',
+    category: 'Icon Moment',
+    era: '2017',
+    summary: 'A single celebration became a symbol of defiance.',
+    context: 'Mayfield’s 2017 season blended production with unmistakable personality.',
+    significance: 'Some players become symbols because they make a program feel alive to a new generation.',
+    relatedLinks: [{ type: 'feature', id: 'baker-mayfield', label: 'Baker exhibit' }],
+  },
+];
+
+export const signatureMoments: SignatureMoment[] = [
+  {
+    id: 'win-streak',
+    title: 'The 47-Game Win Streak',
+    era: 'Wilkinson Era',
+    narrative: 'For nearly five seasons, Oklahoma turned Saturdays into a ritual of inevitability.',
+    takeaway: 'Sustained excellence can become part of a school’s identity.',
+    relatedLinks: [{ type: 'assessment', id: 'timeline', label: 'Timeline challenge' }],
+  },
+  {
+    id: 'wishbone',
+    title: 'Wishbone Dominance',
+    era: '1970s-1980s',
+    narrative: 'OU did not just run the wishbone. It made the formation feel like a statement of speed and nerve.',
+    takeaway: 'A system can become a signature when it matches a program’s personality.',
+    relatedLinks: [{ type: 'coach', id: 'barry-switzer', label: 'Switzer profile' }],
+  },
+  {
+    id: 'title-2000',
+    title: 'The 2000 Restoration',
+    era: 'Stoops Era',
+    narrative: 'Bob Stoops did not just rebuild Oklahoma. He restored it to national dominance.',
+    takeaway: 'A single season can reset how the nation sees a program.',
+    relatedLinks: [{ type: 'championship', id: 'title-2000', label: '2000 title' }],
+  },
+  {
+    id: 'sec-move',
+    title: 'The SEC Move',
+    era: 'Modern Realignment',
+    narrative: 'OU’s move to the SEC reframed old questions: geography, power, money, and ambition.',
+    takeaway: 'Conference membership is part competition, part identity.',
+    relatedLinks: [{ type: 'conference', id: 'sec', label: 'SEC map' }],
+  },
+];
+
+export const rivalries: RivalryProfile[] = [
+  {
+    id: 'texas',
+    opponent: 'Texas',
+    title: 'Red River as Identity',
+    origin: 'A border-stage rivalry that became one of the sport’s defining neutral-site games.',
+    emotionalTone: 'High tension, national glare, and annual bragging rights.',
+    conferenceImplication: 'The rivalry moved from nonconference spectacle to Big 12 centerpiece and now SEC landmark.',
+    culturalImpact: 'For many fans, OU-Texas is the emotional center of the season.',
+    definingGames: [
+      { year: '1950', result: 'OU 14, Texas 13', note: 'A narrow win in a title season.' },
+      { year: '2000', result: 'OU 63, Texas 14', note: 'A modern revival announced in emphatic fashion.' },
+      { year: '2017', result: 'OU 29, Texas 24', note: 'Mayfield steadied a rivalry win in his Heisman season.' },
+    ],
+    relatedLinks: [{ type: 'conference', id: 'big-12', label: 'Big 12 map' }],
+  },
+  {
+    id: 'nebraska',
+    opponent: 'Nebraska',
+    title: 'The Big Eight Standard',
+    origin: 'A Plains power rivalry that often carried national stakes.',
+    emotionalTone: 'Respectful, physical, and heavyweight.',
+    conferenceImplication: 'OU-Nebraska gave the Big Eight its national football identity.',
+    culturalImpact: 'The rivalry represented an era when regional leagues could shape national title races.',
+    definingGames: [
+      { year: '1971', result: 'Nebraska 35, OU 31', note: 'The Game of the Century remains part of rivalry lore.' },
+      { year: '1974', result: 'OU 28, Nebraska 14', note: 'A championship-season statement.' },
+      { year: '2000', result: 'OU 31, Nebraska 14', note: 'The Stoops revival passed through a top-ranked rival.' },
+    ],
+    relatedLinks: [{ type: 'championship', id: 'title-2000', label: '2000 title' }],
+  },
+  {
+    id: 'oklahoma-state',
+    opponent: 'Oklahoma State',
+    title: 'Bedlam and Home Ground',
+    origin: 'An in-state rivalry that made conference stakes intensely local.',
+    emotionalTone: 'Familiar, emotional, and close to home.',
+    conferenceImplication: 'Bedlam helped localize OU’s Big Eight and Big 12 schedules.',
+    culturalImpact: 'The rivalry made state identity part of the football calendar.',
+    definingGames: [
+      { year: '1985', result: 'OU 13, OSU 0', note: 'A defensive statement inside a title season.' },
+      { year: '2000', result: 'OU 12, OSU 7', note: 'A tense rivalry win protected an unbeaten run.' },
+    ],
+    relatedLinks: [{ type: 'conference', id: 'big-eight', label: 'Big Eight map' }],
+  },
+  {
+    id: 'missouri',
+    opponent: 'Missouri',
+    title: 'A Conference Mirror',
+    origin: 'A long-running conference relationship from the old Plains alignment.',
+    emotionalTone: 'Historic, regional, and connective.',
+    conferenceImplication: 'Missouri links OU’s Big Eight past with the modern SEC map.',
+    culturalImpact: 'The matchup helps learners see how realignment preserves old threads in new settings.',
+    definingGames: [
+      { year: '2007', result: 'OU 38, Missouri 17', note: 'A Big 12 title-game result with national stakes.' },
+      { year: '2010', result: 'Missouri 36, OU 27', note: 'A reminder that conference identity is never static.' },
+    ],
+    relatedLinks: [{ type: 'conference', id: 'sec', label: 'SEC map' }],
+  },
+];
