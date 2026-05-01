@@ -1,4 +1,4 @@
-import { ArrowRight, FileText, Link2, X } from 'lucide-react';
+import { ArrowRight, FileText, Link2, ListChecks, X } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import type { Screen } from '../types';
 import type { MuseumArtifact, RelatedLink, SignatureMoment } from '../types/content';
@@ -27,12 +27,12 @@ export function SectionHero({
   return (
     <section className="mb-6 overflow-hidden rounded-md border border-charcoal/10 bg-white/88 shadow-exhibit backdrop-blur">
       <div className={`h-2 ${color}`} />
-      <div className="grid gap-5 p-6 sm:p-7 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div className="grid gap-5 p-4 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.24em] text-brass">{eyebrow}</p>
-          <h1 className="mt-2 font-display text-4xl font-bold leading-tight text-charcoal sm:text-5xl">{title}</h1>
+          <h1 className="mt-2 font-display text-[clamp(2rem,8vw,3.5rem)] font-bold leading-tight text-charcoal">{title}</h1>
           <p className="mt-3 max-w-3xl text-base leading-7 text-charcoal/72">{children}</p>
-          {meta && <p className="mt-4 inline-flex rounded-sm bg-charcoal px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-cream">{meta}</p>}
+          {meta && <p className="mt-4 inline-flex max-w-full rounded-sm bg-charcoal px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-cream">{meta}</p>}
         </div>
         <div className="hidden h-28 w-44 rounded-md border border-charcoal/10 bg-charcoal map-line shadow-inner lg:block" aria-hidden="true" />
       </div>
@@ -44,7 +44,7 @@ export function StatPill({ label, value, dark = false }: { label: string; value:
   return (
     <div className={`rounded-md border p-3 ${dark ? 'border-white/10 bg-white/10' : 'border-charcoal/10 bg-cream/85'}`}>
       <p className={`text-xs font-black uppercase tracking-[0.16em] ${dark ? 'text-gold' : 'text-charcoal/48'}`}>{label}</p>
-      <p className={`mt-1 font-display text-2xl font-bold leading-tight ${dark ? 'text-cream' : 'text-charcoal'}`}>{value}</p>
+      <p className={`mt-1 break-words font-display text-2xl font-bold leading-tight ${dark ? 'text-cream' : 'text-charcoal'}`}>{value}</p>
     </div>
   );
 }
@@ -70,7 +70,7 @@ export function RelatedLinks({ links, onNavigate }: { links: RelatedLink[]; onNa
               const route = relatedLinkToRoute(link);
               onNavigate(route.screen, route.targetId);
             }}
-            className="inline-flex min-h-9 items-center gap-2 rounded-md bg-charcoal px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-cream transition hover:-translate-y-0.5 hover:bg-crimson"
+            className="inline-flex min-h-[44px] max-w-full items-center gap-2 rounded-md bg-charcoal px-3 py-2 text-left text-xs font-bold uppercase leading-tight tracking-[0.12em] text-cream transition hover:-translate-y-0.5 hover:bg-crimson"
           >
             {link.label} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
@@ -125,6 +125,44 @@ export function GalleryPlaque({ eyebrow, title, children }: { eyebrow: string; t
       <p className="text-xs font-black uppercase tracking-[0.24em] text-gold">{eyebrow}</p>
       <h2 className="mt-2 font-display text-3xl font-bold">{title}</h2>
       <p className="mt-2 max-w-4xl font-editorial text-sm leading-6 text-cream/76">{children}</p>
+    </section>
+  );
+}
+
+
+export function HistoricalNotesPanel({
+  title = 'Key Changes',
+  notes,
+  compact = false,
+}: {
+  title?: string;
+  notes?: string[];
+  compact?: boolean;
+}) {
+  if (!notes?.length) {
+    return (
+      <section className="rounded-md border border-charcoal/10 bg-white/84 p-4 shadow-sm">
+        <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-brass">
+          <ListChecks className="h-4 w-4" aria-hidden="true" /> {title}
+        </p>
+        <p className="mt-2 text-sm leading-6 text-charcoal/64">Historical notes are being curated for this view.</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className={`rounded-md border border-charcoal/10 bg-white/88 shadow-sm ${compact ? 'p-4' : 'p-5'}`}>
+      <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-brass">
+        <ListChecks className="h-4 w-4" aria-hidden="true" /> {title}
+      </p>
+      <ul className="mt-3 grid gap-2">
+        {notes.map((note) => (
+          <li key={note} className="grid grid-cols-[0.55rem_1fr] gap-2 text-sm leading-6 text-charcoal/72">
+            <span className="mt-2 h-2 w-2 rounded-full bg-crimson" aria-hidden="true" />
+            <span>{note}</span>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -237,7 +275,7 @@ export function ComparePanel({
             <p className="mt-2 text-sm leading-6 text-charcoal/70">{item.summary}</p>
             <div className="mt-3 grid gap-2">
               {item.stats.map((stat) => (
-                <div key={stat.label} className="flex items-center justify-between gap-3 border-t border-charcoal/10 pt-2 text-sm">
+                <div key={stat.label} className="flex flex-col gap-1 border-t border-charcoal/10 pt-2 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-3">
                   <span className="font-bold text-charcoal/56">{stat.label}</span>
                   <span className="font-black text-charcoal">{stat.value}</span>
                 </div>

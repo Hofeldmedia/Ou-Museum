@@ -15,15 +15,18 @@ type MuseumLayoutProps = {
 export function MuseumLayout({ children, theme = 'light' }: MuseumLayoutProps) {
   return (
     <main className={`min-h-screen overflow-x-hidden text-charcoal ${theme === 'dark' ? 'bg-charcoal' : 'museum-texture'}`}>
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 py-5 sm:px-8 lg:px-10">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1200px] flex-col px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
         {children}
+        <footer className="mt-8 border-t border-charcoal/10 py-5 text-center text-xs font-bold uppercase tracking-[0.16em] text-charcoal/48">
+          Created by Patrick Hofeld
+        </footer>
       </div>
     </main>
   );
 }
 
 export function ExhibitContainer({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
-  return <div className={`mx-auto w-full ${wide ? 'max-w-7xl' : 'max-w-6xl'}`}>{children}</div>;
+  return <div className={`mx-auto w-full ${wide ? 'max-w-[1200px]' : 'max-w-6xl'} px-0 sm:px-0`}>{children}</div>;
 }
 
 export function PageTransition({ children, transitionKey }: { children: ReactNode; transitionKey: string }) {
@@ -73,16 +76,18 @@ export function HeroLanding({
   audioEnabled,
   onBeginTour,
   onExploreFreely,
+  onStartExploring,
   onToggleAudio,
 }: {
   museumMode: MuseumMode;
   audioEnabled: boolean;
   onBeginTour: () => void;
   onExploreFreely: () => void;
+  onStartExploring: () => void;
   onToggleAudio: () => void;
 }) {
   return (
-    <section className="relative -mx-5 -mt-5 flex min-h-screen items-center overflow-hidden px-5 py-10 sm:-mx-8 sm:px-8 lg:-mx-10 lg:px-10">
+    <section className="relative -mx-4 -mt-4 flex min-h-screen items-center overflow-hidden px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <div className="absolute inset-0 bg-charcoal" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,0.16),transparent_22%),radial-gradient(circle_at_78%_68%,rgba(132,22,23,0.38),transparent_34%),linear-gradient(115deg,rgba(0,0,0,0.96),rgba(50,50,50,0.74))]" />
       <div className="stadium-lights absolute inset-0 opacity-75" />
@@ -92,27 +97,27 @@ export function HeroLanding({
         <div className="relative grid min-h-[82vh] items-center">
           <div className="max-w-5xl text-cream animate-[heroTextIn_0.9s_ease-out]">
             <p className="mb-5 inline-flex rounded-sm bg-gold px-3 py-1 text-xs font-black uppercase tracking-[0.24em] text-charcoal">
-              Oklahoma Football Museum
+              Oklahoma Interactive Museum
             </p>
-            <h1 className="font-display text-5xl font-bold leading-[0.98] sm:text-6xl lg:text-7xl">
-              This is the story of a program that shaped college football.
+            <h1 className="font-display text-[clamp(2.65rem,13vw,5rem)] font-bold leading-[0.98] sm:text-[clamp(3.5rem,8vw,5.5rem)]">
+              Explore the Evolution of College Football
             </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-cream/78">
-              Since 1895, the Oklahoma Sooners have built one of the greatest traditions in the sport — seven national championships,
-              legendary coaches, Heisman winners, and a standard of excellence that spans generations.
+            <p className="mt-6 max-w-3xl text-[clamp(1rem,2.5vw,1.25rem)] leading-7 text-cream/78 sm:leading-8">
+              Follow conference realignment, school locations, and historical map changes through Oklahoma’s journey from regional power to SEC-era contender.
             </p>
             <p className="mt-5 font-accent text-lg leading-none text-white/70 sm:text-xl">
-              Seven titles. Forty-seven straight. One Oklahoma.
+              Maps, rivalries, titles, and the road ahead.
             </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <PrimaryButton onClick={onBeginTour}>Begin the Museum Tour</PrimaryButton>
-              <PrimaryButton variant="secondary" onClick={onExploreFreely}>Explore Freely</PrimaryButton>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <PrimaryButton className="w-full sm:w-auto" onClick={onStartExploring} aria-label="Start exploring the main conference map">Start Exploring</PrimaryButton>
+              <PrimaryButton className="w-full sm:w-auto" variant="secondary" onClick={onBeginTour}>Guided Intro</PrimaryButton>
+              <PrimaryButton className="w-full border border-white/15 text-cream hover:bg-white/10 hover:text-white sm:w-auto" variant="ghost" onClick={onExploreFreely}>Museum Hub</PrimaryButton>
               <button
                 type="button"
                 onClick={onToggleAudio}
                 aria-pressed={audioEnabled}
                 aria-label={audioEnabled ? 'Mute museum audio' : 'Enable subtle museum audio'}
-                className="inline-flex min-h-11 items-center gap-2 rounded-md border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold uppercase tracking-[0.12em] text-cream transition hover:bg-white/18"
+                className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-md border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold uppercase tracking-[0.12em] text-cream transition hover:bg-white/18 sm:w-auto"
               >
                 {audioEnabled ? <Volume2 className="h-4 w-4" aria-hidden="true" /> : <VolumeX className="h-4 w-4" aria-hidden="true" />}
                 {audioEnabled ? 'Audio On' : 'Audio Off'}
@@ -210,7 +215,7 @@ function TypewriterLine({
 
   return (
     <div className="min-h-[3.75rem] sm:min-h-[4.5rem]">
-      <p aria-label={text} className="font-display text-4xl font-bold leading-tight sm:text-5xl">
+      <p aria-label={text} className="font-display text-[clamp(2rem,10vw,3rem)] font-bold leading-tight">
         <span aria-hidden="true">{text.slice(0, count)}</span>
         {!done && <span aria-hidden="true" className="ml-1 inline-block h-[1em] w-[0.08em] animate-pulse bg-cream align-[-0.1em]" />}
       </p>
@@ -299,13 +304,13 @@ export function IntroSequence({ onComplete }: { onComplete: () => void }) {
   };
 
   return (
-    <section className="relative -mx-5 -mt-5 flex min-h-screen items-center justify-center overflow-hidden bg-charcoal px-5 text-center text-cream sm:-mx-8 lg:-mx-10">
+    <section className="relative -mx-4 -mt-4 flex min-h-screen items-center justify-center overflow-hidden bg-charcoal px-4 text-center text-cream sm:-mx-6 lg:-mx-8">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(190,180,165,0.18),transparent_28%),linear-gradient(135deg,rgba(132,22,23,0.3),transparent_48%)]" />
       <div className="film-grain absolute inset-0 opacity-30" />
       <button
         type="button"
         onClick={skipIntro}
-        className="absolute right-5 top-5 z-10 rounded-md border border-white/15 bg-white/10 px-3 py-2 text-xs font-black uppercase tracking-[0.16em] text-cream transition hover:bg-white/18 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50"
+        className="absolute right-4 top-4 z-10 min-h-[44px] rounded-md border border-white/15 bg-white/10 px-3 py-2 text-xs font-black uppercase tracking-[0.16em] text-cream transition hover:bg-white/18 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 sm:right-5 sm:top-5"
       >
         Skip Intro
       </button>
@@ -340,7 +345,7 @@ function IntroFrameContent({
 }) {
   if (frame.kind === 'text') {
     return (
-      <h1 className="max-w-4xl font-display text-5xl font-bold leading-tight text-white drop-shadow-[0_8px_20px_rgba(0,0,0,0.45)] sm:text-6xl">
+      <h1 className="max-w-4xl px-2 font-display text-[clamp(2.25rem,12vw,4rem)] font-bold leading-tight text-white drop-shadow-[0_8px_20px_rgba(0,0,0,0.45)]">
         {frame.line}
       </h1>
     );
@@ -349,7 +354,7 @@ function IntroFrameContent({
   if (frame.kind === 'logos') {
     return (
       <div className="flex flex-col items-center gap-8">
-          <div className="flex items-center justify-center gap-5 sm:gap-8">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
           <IntroLogoBadge src={OU_LOGO} alt="Oklahoma Sooners logo" fallback="OU" />
           <div aria-hidden="true" className="h-16 w-px bg-white/60 sm:h-20" />
           <ConferenceLogo snapshotId={frame.pair.snapshotId} alt={`${frame.pair.rightLabel} logo`} size="intro" fallbackLabel={frame.pair.rightLabel} className="border-white/10 bg-white/95 text-charcoal shadow-[0_16px_36px_rgba(0,0,0,0.35)]" imageClassName="py-2" />

@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { memo, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { Filter, Globe2, X } from 'lucide-react';
 import { fbs2026Conferences } from '../data/fbs2026Conferences';
+import { historicalNotes } from '../data/historicalNotes';
+import { getSchoolLogo } from '../utils/getSchoolLogo';
 import { fbsSchoolRegistry } from '../data/fbsSchoolRegistry';
 import type { FbsConference, FbsConferenceId, FbsSchool } from '../types/fbs';
+import { clampMapPan, getCenteredMapPan, hasValidMapCoordinates } from '../utils/mapFocus';
 import { projectSchoolCoordinates, usMapViewBox, usNationPath, usStateBordersPath } from '../utils/mapProjection';
-import { GalleryPlaque, SectionHero } from '../components/MuseumComponents';
+import { GalleryPlaque, HistoricalNotesPanel, SectionHero } from '../components/MuseumComponents';
 import { ConferenceLogo } from '../components/ui/ConferenceLogo';
 import { SharedZoomControls } from '../components/map/SharedZoomControls';
 
@@ -29,14 +32,46 @@ function getConference(id: FbsConferenceId) {
   return fbs2026Conferences.find((conference) => conference.id === id)!;
 }
 
-function FbsMarker({ school, selected, allMode, onSelect }: { school: FbsSchool; selected: boolean; allMode: boolean; onSelect: () => void }) {
+function FbsSchoolLogoImage({
+  school,
+  imageClassName,
+  fallbackClassName,
+}: {
+  school: FbsSchool;
+  imageClassName: string;
+  fallbackClassName: string;
+}) {
   const [logoFailed, setLogoFailed] = useState(false);
+  const [useFallback, setUseFallback] = useState(false);
+  const logo = getSchoolLogo('sec-current', school.id, school.name);
+  const logoSrc = useFallback ? logo.dark : logo.light;
+
+  if (logoSrc && !logoFailed) {
+    return (
+      <img
+        src={logoSrc}
+        alt={logo.alt}
+        className={imageClassName}
+        onError={() => {
+          if (!useFallback && logo.dark) {
+            setUseFallback(true);
+            return;
+          }
+          setLogoFailed(true);
+        }}
+        loading="lazy"
+      />
+    );
+  }
+
+  return <span className={fallbackClassName}>{initials(school)}</span>;
+}
+
+const FbsMarker = memo(function FbsMarker({ school, selected, allMode, onSelect }: { school: FbsSchool; selected: boolean; allMode: boolean; onSelect: () => void }) {
   const point = projectSchoolCoordinates(school.latitude, school.longitude);
   if (!point) return null;
 
   const conference = getConference(school.conferenceId);
-  const logo = school.logoPath ?? school.logoUrl;
-  const showLogo = Boolean(logo) && !logoFailed;
 
   return (
     <button
@@ -56,18 +91,18 @@ function FbsMarker({ school, selected, allMode, onSelect }: { school: FbsSchool;
         style={{ boxShadow: `0 0 ${selected ? 26 : 12}px ${conference.colorToken}66`, color: conference.colorToken }}
       >
         <span className="absolute inset-x-0 bottom-0 h-1" style={{ backgroundColor: conference.colorToken }} />
-        {showLogo ? (
-          <img src={logo} alt={`${school.name} logo`} className="h-full w-full object-contain p-0.5" onError={() => setLogoFailed(true)} loading="lazy" />
-        ) : (
-          initials(school)
-        )}
+        <FbsSchoolLogoImage
+          school={school}
+          imageClassName="h-full w-full bg-white object-contain p-0.5"
+          fallbackClassName="flex h-full w-full items-center justify-center px-1 text-center text-[10px] font-black leading-none"
+        />
       </span>
       <span className={`pointer-events-none absolute left-1/2 top-full mt-1 hidden -translate-x-1/2 whitespace-nowrap rounded-sm bg-charcoal/90 px-2 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-white shadow-lg md:block ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'}`}>
         {school.shortName}
       </span>
     </button>
   );
-}
+});
 
 function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool }: { schools: FbsSchool[]; selectedSchool: FbsSchool | null; selectedConferenceId: FbsConferenceId | 'all'; onSelectSchool: (school: FbsSchool) => void }) {
   const viewportRef = useRef<HTMLDivElement | null>(null);
@@ -84,11 +119,14 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
     return () => observer.disconnect();
   }, []);
 
-  const clampPan = (nextZoom: number, nextPan: { x: number; y: number }) => {
-    const minPanX = viewportSize.width - viewportSize.width * nextZoom;
-    const minPanY = viewportSize.height - viewportSize.height * nextZoom;
-    return { x: clamp(nextPan.x, minPanX, 0), y: clamp(nextPan.y, minPanY, 0) };
-  };
+  const conferenceCounts = useMemo(() => {
+    return fbs2026Conferences.reduce<Record<FbsConferenceId, number>>((counts, conference) => {
+      counts[conference.id] = schools.filter((school) => school.conferenceId === conference.id).length;
+      return counts;
+    }, {} as Record<FbsConferenceId, number>);
+  }, [schools]);
+
+  const clampPan = (nextZoom: number, nextPan: { x: number; y: number }) => clampMapPan(viewportSize, nextZoom, nextPan);
 
   const resetView = () => {
     setZoom(1);
@@ -96,13 +134,22 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
   };
 
   const focusSchool = (school: FbsSchool | null) => {
-    if (!school) return;
-    const point = projectSchoolCoordinates(school.latitude, school.longitude);
-    if (!point) return;
-    const pointX = (point.x / usMapViewBox.width) * viewportSize.width;
-    const pointY = (point.y / usMapViewBox.height) * viewportSize.height;
-    setZoom(FOCUS_ZOOM);
-    setPan(clampPan(FOCUS_ZOOM, { x: viewportSize.width / 2 - pointX * FOCUS_ZOOM, y: viewportSize.height / 2 - pointY * FOCUS_ZOOM }));
+    if (!hasValidMapCoordinates(school)) return;
+    const targetZoom = Math.max(FOCUS_ZOOM, zoom);
+    const nextPan = getCenteredMapPan(viewportSize, school, targetZoom);
+    if (!nextPan) return;
+    setZoom(targetZoom);
+    setPan(nextPan);
+  };
+
+  useEffect(() => {
+    if (!selectedSchool) return;
+    focusSchool(selectedSchool);
+  }, [selectedSchool?.id]);
+
+  const selectSchool = (school: FbsSchool) => {
+    onSelectSchool(school);
+    focusSchool(school);
   };
 
   const adjustZoom = (direction: 1 | -1) => {
@@ -138,7 +185,7 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
         </div>
         <div className="flex flex-wrap items-center gap-3 rounded-md border border-charcoal/12 bg-white/88 px-3 py-2 text-xs font-bold text-charcoal/82 shadow-sm">
           {fbs2026Conferences.map((conference) => {
-            const count = schools.filter((school) => school.conferenceId === conference.id).length;
+            const count = conferenceCounts[conference.id] ?? 0;
             if (!count && selectedConferenceId !== conference.id) return null;
             return (
               <span key={conference.id} className="inline-flex items-center gap-2">
@@ -151,17 +198,17 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
       </div>
       <div
         ref={viewportRef}
-        className={`relative aspect-[1.55] min-h-[430px] overflow-hidden rounded-md border border-white/10 bg-[#dbe4ea] md:min-h-[560px] ${zoom > 1 ? (dragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'}`}
+        className={`relative aspect-[1.15] min-h-[320px] overflow-hidden rounded-md border border-white/10 bg-[#dbe4ea] sm:aspect-[1.35] md:aspect-[1.55] md:min-h-[520px] ${zoom > 1 ? (dragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'}`}
         onPointerDown={startPan}
       >
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.42),rgba(219,228,234,0.95))]" />
-        <div className="absolute inset-0 transition-transform duration-500 ease-out" style={{ transformOrigin: '0 0', transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
+        <div className="absolute inset-0 transition-transform duration-300 ease-out will-change-transform" style={{ transformOrigin: '0 0', transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
           <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${usMapViewBox.width} ${usMapViewBox.height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Map of the United States">
             <path d={usNationPath} fill="#f8f9fb" stroke="#323232" strokeWidth={1.6} />
             <path d={usStateBordersPath} fill="none" stroke="#69757f" strokeWidth={0.8} opacity={0.5} />
           </svg>
           {schools.map((school) => (
-            <FbsMarker key={school.id} school={school} selected={selectedSchool?.id === school.id} allMode={selectedConferenceId === 'all'} onSelect={() => onSelectSchool(school)} />
+            <FbsMarker key={school.id} school={school} selected={selectedSchool?.id === school.id} allMode={selectedConferenceId === 'all'} onSelect={() => selectSchool(school)} />
           ))}
         </div>
         <div className="absolute left-4 top-4 hidden max-w-[20rem] rounded-md border border-charcoal/15 bg-white/82 px-3 py-2 text-xs font-bold leading-5 text-charcoal/75 shadow-lg backdrop-blur md:block">
@@ -192,7 +239,13 @@ function LandscapeSidePanel({ selectedSchool, selectedConference, visibleSchools
     return (
       <aside className="rounded-md border border-charcoal/10 bg-white/92 p-5 shadow-exhibit">
         <div className="mb-4 flex items-start gap-3">
-          <ConferenceLogo conferenceId={conference.id} alt={`${conference.name} logo`} size="sm" fallbackLabel={conference.shortName} />
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-md border border-charcoal/10 bg-white shadow-sm">
+            <FbsSchoolLogoImage
+              school={selectedSchool}
+              imageClassName="h-full w-full object-contain p-1"
+              fallbackClassName="flex h-full w-full items-center justify-center bg-charcoal px-1 text-center text-[10px] font-black leading-none text-gold"
+            />
+          </div>
           <div>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-brass">Selected school</p>
             <h2 className="font-display text-3xl font-bold leading-none text-charcoal">{selectedSchool.name}</h2>
@@ -272,6 +325,10 @@ function LandscapeSidePanel({ selectedSchool, selectedConference, visibleSchools
 
 export function FbsLandscapePage() {
   const [selectedConferenceId, setSelectedConferenceId] = useState<FbsConferenceId | 'all'>('all');
+
+  useEffect(() => {
+    document.title = '2026 Map | OU Interactive Museum';
+  }, []);
   const [selectedSchoolId, setSelectedSchoolId] = useState<string | null>(null);
 
   const visibleSchools = useMemo(
@@ -294,6 +351,9 @@ export function FbsLandscapePage() {
       <GalleryPlaque eyebrow="Projection Note" title="Built for ongoing realignment updates">
         This map is separate from the OU conference-history gallery and is seeded from announced 2026 alignment changes. Review the data periodically as schools and conferences finalize future membership.
       </GalleryPlaque>
+      <div className="mb-5">
+        <HistoricalNotesPanel title="What Changed in 2026?" notes={historicalNotes['2026']} />
+      </div>
 
       <section className="mb-5 rounded-md border border-charcoal/10 bg-white/82 p-4 shadow-sm">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
@@ -321,11 +381,11 @@ export function FbsLandscapePage() {
         </div>
       </section>
 
-      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="grid w-full items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,360px)]">
         <div className="space-y-4">
           <FbsMap schools={visibleSchools} selectedSchool={selectedSchool} selectedConferenceId={selectedConferenceId} onSelectSchool={(school) => setSelectedSchoolId(school.id)} />
         </div>
-        <div className="space-y-4 xl:sticky xl:top-32">
+        <div className="mx-auto w-full max-w-[360px] space-y-4 xl:sticky xl:top-32">
           <LandscapeSidePanel selectedSchool={selectedSchool} selectedConference={selectedConference} visibleSchools={visibleSchools} onSelectSchool={(school) => setSelectedSchoolId(school.id)} />
           <section className="rounded-md border border-charcoal/10 bg-charcoal p-5 text-cream shadow-sm">
             <div className="flex items-center gap-3">

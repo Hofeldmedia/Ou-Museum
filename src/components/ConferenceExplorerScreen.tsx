@@ -2,6 +2,7 @@ import { CheckCircle2, ChevronLeft, ChevronRight, Info, MapPinned, Sparkles } fr
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { BrandLogo } from './BrandLogo';
 import { conferenceEras, earlyContextCards } from '../data/conferences';
+import { historicalNotes } from '../data/historicalNotes';
 import { ConferenceLogo } from './ui/ConferenceLogo';
 import { normanAnchor } from '../data/heismanMapData';
 import { nflDestinationMarkers, nflMapRoutes } from '../data/nflMapData';
@@ -25,7 +26,7 @@ import type {
 import { getEraExplored, isConferenceExplorationComplete, isEraComplete } from '../utils/exploration';
 import { getSchoolLogo } from '../utils/getSchoolLogo';
 import { getOUOriginLogo } from '../utils/getNFLLogo';
-import { GalleryPlaque, RelatedLinks, SectionHero } from './MuseumComponents';
+import { GalleryPlaque, HistoricalNotesPanel, RelatedLinks, SectionHero } from './MuseumComponents';
 import { NFLLogoBadge } from './NFLLogoBadge';
 import { PrimaryButton } from './PrimaryButton';
 import { MapControls } from './map/MapControls';
@@ -46,6 +47,10 @@ type ConferenceExplorerScreenProps = {
 
 function getPreferredEraSchool(era: ConferenceEra) {
   return era.schools.find((school) => school.isOU) ?? era.schools[0];
+}
+
+function getEraTitleYear(era: ConferenceEra) {
+  return era.years.match(/\d{4}/)?.[0] ?? null;
 }
 
 function EraSelector({
@@ -81,7 +86,7 @@ function EraSelector({
           <p className="text-xs font-black uppercase tracking-[0.2em] text-brass">Conference Timeline</p>
           <p className="text-sm font-semibold text-charcoal/62">Step through major conference snapshots and watch the membership map evolve.</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="hidden items-center gap-2 md:flex">
           <button
             type="button"
             onClick={() => scrollRail('prev')}
@@ -102,7 +107,7 @@ function EraSelector({
       </div>
       <div
         ref={railRef}
-        className="relative flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 scroll-smooth [scrollbar-width:thin]"
+        className="relative grid grid-cols-1 gap-3 pb-2 md:flex md:snap-x md:snap-mandatory md:overflow-x-auto md:scroll-smooth md:[scrollbar-width:thin]"
         role="tablist"
         aria-label="Conference eras"
       >
@@ -121,7 +126,7 @@ function EraSelector({
               role="tab"
               aria-selected={selected}
               onClick={() => onSelectEra(era.id)}
-              className={`relative min-w-[16rem] snap-center overflow-hidden rounded-md border px-4 py-3 text-left transition duration-300 hover:-translate-y-0.5 ${
+              className={`relative min-w-0 overflow-hidden rounded-md border px-4 py-3 text-left transition duration-300 hover:-translate-y-0.5 md:min-w-[16rem] md:snap-center ${
                 selected
                   ? 'border-gold bg-charcoal text-cream shadow-exhibit'
                   : complete
@@ -536,6 +541,7 @@ export function ConferenceExplorerScreen({ exploredSchools, onExploreSchool, onC
   const [currentEraId, setCurrentEraId] = useState(defaultConferenceEra.id);
   const [activeLayer, setActiveLayer] = useState<MapLayerId>('conference');
   const [selectedSchoolId, setSelectedSchoolId] = useState(getPreferredEraSchool(defaultConferenceEra).id);
+  const [mapFocusRequest, setMapFocusRequest] = useState(0);
   const [nflViewMode, setNflViewMode] = useState<'teams' | 'player'>('teams');
   const [selectedNflPlayerId, setSelectedNflPlayerId] = useState(nflMapRoutes[0]?.playerId ?? '');
   const [selectedNflTeam, setSelectedNflTeam] = useState(nflDestinationMarkers[0]?.teamName ?? '');
@@ -562,15 +568,22 @@ export function ConferenceExplorerScreen({ exploredSchools, onExploreSchool, onC
   );
   const totalSchools = useMemo(() => conferenceEras.reduce((sum, era) => sum + era.schools.length, 0), []);
 
+  useEffect(() => {
+    const selectedYear = getEraTitleYear(currentEra);
+    document.title = selectedYear ? `${selectedYear} Map | OU Interactive Museum` : 'OU Interactive Museum';
+  }, [currentEra]);
+
   const selectEra = (eraId: string) => {
     const nextEra = conferenceEras.find((era) => era.id === eraId) ?? conferenceEras[0];
     const nextSelected = getPreferredEraSchool(nextEra);
     setCurrentEraId(nextEra.id);
     setSelectedSchoolId(nextSelected.id);
+    setMapFocusRequest((request) => request + 1);
   };
 
   const selectSchool = (school: ConferenceSchool) => {
     setSelectedSchoolId(school.id);
+    setMapFocusRequest((request) => request + 1);
     onExploreSchool(currentEra.id, school.id);
   };
 
@@ -815,8 +828,8 @@ export function ConferenceExplorerScreen({ exploredSchools, onExploreSchool, onC
         </section>
       )}
 
-      <div className="my-5 grid items-start justify-center gap-5 xl:grid-cols-[minmax(0,980px)_360px]">
-        <div className="mx-auto w-full max-w-[980px] space-y-4">
+      <div className="my-5 grid w-full items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,360px)]">
+        <div className="mx-auto w-full min-w-0 max-w-[980px] space-y-4">
           {activeLayer === 'conference' ? (
             <>
               <EraSelector currentEra={currentEra} exploredSchools={exploredSchools} onSelectEra={selectEra} />
@@ -868,6 +881,9 @@ export function ConferenceExplorerScreen({ exploredSchools, onExploreSchool, onC
                       </p>
                     </div>
                   </section>
+                </div>
+                <div className="mt-3">
+                  <HistoricalNotesPanel title="Historical Notes" notes={historicalNotes[currentEra.id]} compact />
                 </div>
               </div>
             </>
@@ -952,6 +968,7 @@ export function ConferenceExplorerScreen({ exploredSchools, onExploreSchool, onC
             selectionSubtitle={selectionSubtitle}
             meta={selectionMeta}
             focusTarget={focusTarget}
+            focusKey={mapFocusRequest}
             defaultView={activeLayer === 'conference' ? { zoom: 1.22 } : undefined}
           >
             {activeLayer === 'conference' && (
@@ -1010,7 +1027,7 @@ export function ConferenceExplorerScreen({ exploredSchools, onExploreSchool, onC
           </USConferenceMap>
         </div>
 
-        <div className="w-full max-w-[360px] space-y-4 xl:sticky xl:top-32 xl:self-start">
+        <div className="mx-auto w-full max-w-[360px] space-y-4 xl:sticky xl:top-32 xl:self-start">
           <ExplorationProgress era={currentEra} exploredSchools={exploredSchools} />
           {activeLayer === 'conference' && <ConferenceDetailPanel era={currentEra} school={selectedSchool} />}
           {activeLayer === 'nfl' && (

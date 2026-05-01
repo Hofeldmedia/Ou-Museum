@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { MapLayerId, MapLegendItem } from '../../types/content';
-import { projectSchoolCoordinates, usMapViewBox, usNationPath, usStateBordersPath } from '../../utils/mapProjection';
+import { clampMapPan, getCenteredMapPan, hasValidMapCoordinates } from '../../utils/mapFocus';
+import { usMapViewBox, usNationPath, usStateBordersPath } from '../../utils/mapProjection';
 import { SharedLegend } from './SharedLegend';
 import { SharedZoomControls } from './SharedZoomControls';
 
@@ -13,6 +14,7 @@ type USConferenceMapProps = {
   selectionSubtitle: string;
   meta: string;
   focusTarget: { label: string; latitude: number; longitude: number } | null;
+  focusKey?: string | number;
   defaultView?: {
     zoom: number;
     pan?: { x: number; y: number };
@@ -35,15 +37,6 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function hasValidCoordinates(target: { latitude: number; longitude: number } | null): target is { latitude: number; longitude: number } {
-  return Boolean(
-    target &&
-      Number.isFinite(target.latitude) &&
-      Number.isFinite(target.longitude) &&
-      Math.abs(target.latitude) <= 90 &&
-      Math.abs(target.longitude) <= 180,
-  );
-}
 
 export function USConferenceMap({
   viewKey,
@@ -54,6 +47,7 @@ export function USConferenceMap({
   selectionSubtitle,
   meta,
   focusTarget,
+  focusKey,
   defaultView,
   children,
 }: USConferenceMapProps) {
@@ -85,14 +79,7 @@ export function USConferenceMap({
     };
   };
 
-  const clampPan = (nextZoom: number, nextPan: { x: number; y: number }) => {
-    const minPanX = viewportSize.width - (viewportSize.width * nextZoom);
-    const minPanY = viewportSize.height - (viewportSize.height * nextZoom);
-    return {
-      x: clamp(nextPan.x, minPanX, 0),
-      y: clamp(nextPan.y, minPanY, 0),
-    };
-  };
+  const clampPan = (nextZoom: number, nextPan: { x: number; y: number }) => clampMapPan(viewportSize, nextZoom, nextPan);
 
   const resetView = () => {
     setZoom(defaultZoom);
@@ -105,35 +92,30 @@ export function USConferenceMap({
   }, [defaultZoom, viewKey, viewportSize.width, viewportSize.height]);
 
   const focusLocation = (target: { latitude: number; longitude: number }) => {
-    if (!hasValidCoordinates(target)) {
+    if (!hasValidMapCoordinates(target)) {
       if (import.meta.env.DEV) {
         console.warn('[USConferenceMap] Skipping focus: invalid coordinates.', target);
       }
       return;
     }
 
-    const anchor = projectSchoolCoordinates(target.latitude, target.longitude);
-    if (!anchor) {
+    const targetZoom = Math.max(FOCUS_ZOOM, zoom);
+    const nextPan = getCenteredMapPan(viewportSize, target, targetZoom);
+    if (!nextPan) {
       if (import.meta.env.DEV) {
         console.warn('[USConferenceMap] Skipping focus: projection returned null.', target);
       }
       return;
     }
 
-    const centerX = viewportSize.width / 2;
-    const centerY = viewportSize.height / 2;
-    const pointX = (anchor.x / usMapViewBox.width) * viewportSize.width;
-    const pointY = (anchor.y / usMapViewBox.height) * viewportSize.height;
-    const targetZoom = FOCUS_ZOOM;
-
-    const nextPan = clampPan(targetZoom, {
-      x: centerX - pointX * targetZoom,
-      y: centerY - pointY * targetZoom,
-    });
-
     setZoom(targetZoom);
     setPan(nextPan);
   };
+
+  useEffect(() => {
+    if (!focusTarget) return;
+    focusLocation(focusTarget);
+  }, [focusTarget?.latitude, focusTarget?.longitude, focusTarget?.label, focusKey]);
 
   const adjustZoom = (direction: 1 | -1) => {
     const nextZoom = clamp(Number((zoom + direction * ZOOM_STEP).toFixed(2)), 1, MAX_ZOOM);
@@ -194,13 +176,13 @@ export function USConferenceMap({
       </div>
       <div
         ref={viewportRef}
-        className={`relative aspect-[1.55] min-h-[430px] overflow-hidden rounded-md border border-white/10 bg-[#dbe4ea] md:min-h-[500px] xl:min-h-[580px] ${zoom > defaultZoom ? (dragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'}`}
+        className={`relative aspect-[1.15] min-h-[320px] overflow-hidden rounded-md border border-white/10 bg-[#dbe4ea] sm:aspect-[1.35] md:aspect-[1.55] md:min-h-[500px] xl:min-h-[580px] ${zoom > defaultZoom ? (dragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'}`}
         onPointerDown={startPan}
       >
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.42),rgba(219,228,234,0.95))]" />
         <div className="absolute inset-0 opacity-[0.08] map-line" />
         <div
-          className="absolute inset-0 transition-transform duration-500 ease-out"
+          className="absolute inset-0 transition-transform duration-300 ease-out will-change-transform"
           style={{ transformOrigin: '0 0', transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}
         >
           <svg

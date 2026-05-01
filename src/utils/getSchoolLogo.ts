@@ -1,11 +1,9 @@
-import { espnLogos } from '../data/espnLogos';
 import { findLogoManifestEntry } from '../data/logoManifest';
 import type { EraId, LogoAccuracy, ResolvedLogoAsset } from '../types/content';
 
 export function getSchoolLogo(eraId: EraId, schoolId: string, schoolName = schoolId): ResolvedLogoAsset {
   const entry = findLogoManifestEntry(eraId, schoolId);
-  const espnLogo = espnLogos[schoolId];
-  const placeholderAsset = entry?.fallbackAssetPath ?? `/assets/logos/placeholders/${schoolId}.svg`;
+  const placeholderAsset = getLocalPlaceholderAsset(schoolId, entry?.fallbackAssetPath);
 
   if (entry && entry.accuracy !== 'placeholder') {
     return {
@@ -20,26 +18,13 @@ export function getSchoolLogo(eraId: EraId, schoolId: string, schoolName = schoo
     };
   }
 
-  if (espnLogo) {
-    return {
-      light: espnLogo,
-      dark: placeholderAsset,
-      alt: `${schoolName} logo from ESPN`,
-      accuracy: 'approximate',
-      status: 'approximate',
-      note: entry?.note ?? 'ESPN logo fallback used until a verified local conference-era asset is supplied.',
-      source: 'espn',
-      manifestEntry: entry,
-    };
-  }
-
   return {
     light: placeholderAsset,
-    dark: '/assets/logos/placeholders/generic-school.svg',
+    dark: GENERIC_SCHOOL_PLACEHOLDER,
     alt: `${schoolName} generic placeholder badge`,
     accuracy: 'placeholder',
     status: 'placeholder',
-    note: entry?.note ?? 'No logo manifest entry or ESPN logo found. Placeholder badge used.',
+    note: entry?.note ?? 'No local school PNG asset found. Placeholder badge used.',
     source: 'placeholder',
     manifestEntry: entry,
   };
@@ -54,4 +39,39 @@ export function getLogoStatusLabel(accuracy: LogoAccuracy) {
 function toLegacyStatus(accuracy: LogoAccuracy): ResolvedLogoAsset['status'] {
   if (accuracy === 'exact') return 'era-accurate';
   return accuracy;
+}
+
+const GENERIC_SCHOOL_PLACEHOLDER = '/assets/logos/placeholders/generic-school.svg';
+
+const localPlaceholderSchoolIds = new Set([
+  'alabama',
+  'arkansas',
+  'auburn',
+  'baylor',
+  'colorado',
+  'florida',
+  'georgia',
+  'iowa-state',
+  'kansas',
+  'kansas-state',
+  'kentucky',
+  'lsu',
+  'mississippi-state',
+  'missouri',
+  'nebraska',
+  'oklahoma',
+  'oklahoma-state',
+  'ole-miss',
+  'south-carolina',
+  'tennessee',
+  'texas',
+  'texas-am',
+  'texas-tech',
+  'vanderbilt',
+]);
+
+function getLocalPlaceholderAsset(schoolId: string, manifestFallback?: string) {
+  if (manifestFallback && localPlaceholderSchoolIds.has(schoolId)) return manifestFallback;
+  if (localPlaceholderSchoolIds.has(schoolId)) return `/assets/logos/placeholders/${schoolId}.svg`;
+  return GENERIC_SCHOOL_PLACEHOLDER;
 }

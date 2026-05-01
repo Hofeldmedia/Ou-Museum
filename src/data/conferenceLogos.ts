@@ -1,4 +1,17 @@
-export const CONFERENCE_LOGO_BASE_PATH = '/assets/conference-logos';
+import accLogo from '/assets/conference-logos/acc.png?url';
+import americanLogo from '/assets/conference-logos/american.png?url';
+import big12NewLogo from '/assets/conference-logos/big-12-new.png?url';
+import big12OldLogo from '/assets/conference-logos/big-12-old.png?url';
+import bigEightLogo from '/assets/conference-logos/big-eight.png?url';
+import bigTenLogo from '/assets/conference-logos/big-ten.png?url';
+import conferenceUsaLogo from '/assets/conference-logos/conference-usa.png?url';
+import independentsLogo from '/assets/conference-logos/independents.png?url';
+import macLogo from '/assets/conference-logos/mac.png?url';
+import mountainWestLogo from '/assets/conference-logos/mountain-west.png?url';
+import pac12Logo from '/assets/conference-logos/pac-12-new.png?url';
+import secLogo from '/assets/conference-logos/sec.png?url';
+import sunBeltLogo from '/assets/conference-logos/sun-belt.png?url';
+
 export const OU_LOGO = '/assets/intro-logos/OU.png';
 
 export type ConferenceLogoId =
@@ -31,34 +44,30 @@ export type ConferenceLogoConfig = {
   fallbackLabel: string;
 };
 
-const logoPath = (filename: string) => `${CONFERENCE_LOGO_BASE_PATH}/${filename}`;
-
 export const conferenceLogos: Record<ConferenceLogoId, ConferenceLogoConfig> = {
-  'big-six': { path: logoPath('big-eight.png'), fallbackLabel: 'BIG 8' },
-  'big-seven': { path: logoPath('big-eight.png'), fallbackLabel: 'BIG 8' },
-  'big-eight': { path: logoPath('big-eight.png'), fallbackLabel: 'BIG 8' },
-  'big-12-original': { path: logoPath('big-12-old.png'), fallbackLabel: 'BIG 12' },
-  'big-12-post-nebraska-colorado': { path: logoPath('big-12-old.png'), fallbackLabel: 'BIG 12' },
-  'big-12-tcu-west-virginia': { path: logoPath('big-12-new.png'), fallbackLabel: 'BIG 12' },
-  'big-12-expanded': { path: logoPath('big-12-new.png'), fallbackLabel: 'BIG 12' },
-  'big-12-current': { path: logoPath('big-12-new.png'), fallbackLabel: 'BIG 12' },
-  'sec-2012': { path: logoPath('sec.png'), fallbackLabel: 'SEC' },
-  'sec-current': { path: logoPath('sec.png'), fallbackLabel: 'SEC' },
-
-  acc: { path: logoPath('acc.png'), fallbackLabel: 'ACC' },
-  american: { path: logoPath('american.png'), fallbackLabel: 'AMERICAN' },
-  'big-12': { path: logoPath('big-12-new.png'), fallbackLabel: 'BIG 12' },
-  'big-ten': { path: logoPath('big-ten.png'), fallbackLabel: 'BIG TEN' },
-  'conference-usa': { path: logoPath('conference-usa.png'), fallbackLabel: 'CUSA' },
-  cusa: { path: logoPath('conference-usa.png'), fallbackLabel: 'CUSA' },
-  'fbs-independents': { path: logoPath('independents.png'), fallbackLabel: 'IND' },
-  independents: { path: logoPath('independents.png'), fallbackLabel: 'IND' },
-  mac: { path: logoPath('mac.png'), fallbackLabel: 'MAC' },
-  'mountain-west': { path: logoPath('mountain-west.png'), fallbackLabel: 'MW' },
-  // Pac-12 released a new primary mark on April 27, 2026. Full brand identity guidelines are expected ahead of the 2026-27 season.
-  'pac-12': { path: logoPath('pac-12-new.png'), fallbackLabel: 'PAC-12' },
-  sec: { path: logoPath('sec.png'), fallbackLabel: 'SEC' },
-  'sun-belt': { path: logoPath('sun-belt.png'), fallbackLabel: 'SUN BELT' },
+  'big-six': { path: bigEightLogo, fallbackLabel: 'BIG 8' },
+  'big-seven': { path: bigEightLogo, fallbackLabel: 'BIG 8' },
+  'big-eight': { path: bigEightLogo, fallbackLabel: 'BIG 8' },
+  'big-12-original': { path: big12OldLogo, fallbackLabel: 'BIG 12' },
+  'big-12-post-nebraska-colorado': { path: big12OldLogo, fallbackLabel: 'BIG 12' },
+  'big-12-tcu-west-virginia': { path: big12NewLogo, fallbackLabel: 'BIG 12' },
+  'big-12-expanded': { path: big12NewLogo, fallbackLabel: 'BIG 12' },
+  'big-12-current': { path: big12NewLogo, fallbackLabel: 'BIG 12' },
+  'sec-2012': { path: secLogo, fallbackLabel: 'SEC' },
+  'sec-current': { path: secLogo, fallbackLabel: 'SEC' },
+  acc: { path: accLogo, fallbackLabel: 'ACC' },
+  american: { path: americanLogo, fallbackLabel: 'AMERICAN' },
+  'big-12': { path: big12NewLogo, fallbackLabel: 'BIG 12' },
+  'big-ten': { path: bigTenLogo, fallbackLabel: 'BIG TEN' },
+  'conference-usa': { path: conferenceUsaLogo, fallbackLabel: 'CUSA' },
+  cusa: { path: conferenceUsaLogo, fallbackLabel: 'CUSA' },
+  'fbs-independents': { path: independentsLogo, fallbackLabel: 'IND' },
+  independents: { path: independentsLogo, fallbackLabel: 'IND' },
+  mac: { path: macLogo, fallbackLabel: 'MAC' },
+  'mountain-west': { path: mountainWestLogo, fallbackLabel: 'MW' },
+  'pac-12': { path: pac12Logo, fallbackLabel: 'PAC-12' },
+  sec: { path: secLogo, fallbackLabel: 'SEC' },
+  'sun-belt': { path: sunBeltLogo, fallbackLabel: 'SUN BELT' },
 };
 
 export function getConferenceLogo(id?: string | null): ConferenceLogoConfig | null {

@@ -47,12 +47,12 @@ export function MuseumNav({ current, onNavigate, mapComplete, timelineSolved, ma
             : 'Capstone unlocked';
 
   return (
-    <header className="sticky top-3 z-40 mb-5 rounded-md border border-charcoal/10 bg-white/86 p-3 shadow-exhibit backdrop-blur">
+    <header className="sticky top-0 z-40 mb-5 rounded-md border border-charcoal/10 bg-white/90 p-3 shadow-exhibit backdrop-blur sm:top-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <button
           type="button"
           onClick={() => onNavigate('hub')}
-          className="flex items-center gap-3 rounded-md px-2 py-2 text-left transition hover:bg-charcoal/5"
+          className="flex min-w-0 max-w-full items-center gap-3 rounded-md px-2 py-2 text-left transition hover:bg-charcoal/5"
         >
           <BrandLogo
             src={getOUOriginLogo()}
@@ -61,19 +61,19 @@ export function MuseumNav({ current, onNavigate, mapComplete, timelineSolved, ma
             className="h-10 w-10"
             imageClassName="p-1"
           />
-          <span>
-            <span className="block font-display text-xl font-bold leading-none">OU Football Museum</span>
+          <span className="min-w-0">
+            <span className="block truncate font-display text-lg font-bold leading-none sm:text-xl">OU Football Museum</span>
             <span className="text-xs font-black uppercase tracking-[0.16em] text-brass">{museumMode === 'guided' ? 'Guided tour' : 'Free explore'}</span>
           </span>
         </button>
         <div className="hidden rounded-sm bg-charcoal px-3 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-cream lg:block">
           {nextStepLabel}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto">
           <button
             type="button"
             onClick={onToggleAudio}
-            className="flex h-10 w-10 items-center justify-center rounded-md border border-charcoal/15 bg-white text-charcoal transition hover:bg-cream"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-charcoal/15 bg-white text-charcoal transition hover:bg-cream"
             aria-label={audioEnabled ? 'Mute museum audio' : 'Enable subtle museum audio'}
             aria-pressed={audioEnabled}
           >
@@ -84,7 +84,7 @@ export function MuseumNav({ current, onNavigate, mapComplete, timelineSolved, ma
             aria-label="Jump to museum section"
             value={selectValue}
             onChange={(event) => onNavigate(event.target.value as Screen)}
-            className="rounded-md border border-charcoal/15 bg-cream px-3 py-2 text-sm font-bold text-charcoal"
+            className="min-w-0 flex-1 rounded-md border border-charcoal/15 bg-cream px-3 py-2 text-sm font-bold text-charcoal sm:flex-none"
           >
             {sections.map((section) => (
               <option key={section.screen} value={section.screen} disabled={isLocked(section.screen)}>
@@ -95,7 +95,7 @@ export function MuseumNav({ current, onNavigate, mapComplete, timelineSolved, ma
           <button
             type="button"
             onClick={() => onNavigate('summary')}
-            className="flex h-10 w-10 items-center justify-center rounded-md border border-charcoal/15 bg-white text-charcoal transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-45"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-charcoal/15 bg-white text-charcoal transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-45"
             aria-label={!isLocked('summary') ? 'Open completion summary' : 'Completion summary locked until assessments are complete'}
             disabled={isLocked('summary')}
           >

@@ -16,10 +16,10 @@ export function SharedZoomControls({
   focusDisabled?: boolean;
 }) {
   const buttonClass =
-    'flex h-10 w-10 items-center justify-center rounded-md border border-charcoal/15 bg-white/88 text-charcoal shadow-sm transition hover:bg-white';
+    'flex h-11 w-11 items-center justify-center rounded-md border border-charcoal/15 bg-white/90 text-charcoal shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-crimson/20';
 
   return (
-    <div className="absolute right-4 top-4 z-20 flex flex-col gap-2">
+    <div className="absolute right-3 top-3 z-20 flex flex-col gap-2 sm:right-4 sm:top-4">
       <button type="button" onClick={onZoomIn} className={buttonClass} aria-label="Zoom in on map">
         <Plus className="h-4 w-4" aria-hidden="true" />
       </button>

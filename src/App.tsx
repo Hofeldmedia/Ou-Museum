@@ -1,5 +1,5 @@
 import { Award, CheckCircle2, Filter, Landmark, MapPinned, Search, Shield, Trophy, Users } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { ConferenceExplorerScreen } from './components/ConferenceExplorerScreen';
 import { AudioAura } from './components/experience/AudioAura';
 import { TourNarrative } from './components/experience/TourNarrative';
@@ -22,10 +22,6 @@ import { rivalries, signatureMoments, tourChapters } from './data/immersive';
 import { nflSooners } from './data/nflSooners';
 import { profileImages } from './data/profileImages';
 import { nflTeamRegistry } from './data/nflMapData';
-import { QuizHubPage } from './pages/QuizHubPage';
-import { ChallengeModePage } from './pages/ChallengeModePage';
-import { FbsLandscapePage } from './pages/FbsLandscapePage';
-import { CoachesOrderingQuizPage, HeismanMatchingQuizPage, RivalriesQuizPage } from './pages/QuizPages';
 import type { ExploredSchools, Screen } from './types';
 import type { ChampionshipSeason, CoachProfile, FeaturedPerson, HeismanWinner, MuseumArtifact, MuseumMode, NFLSooner, NFLStatus, RelatedLink, RivalryProfile } from './types/content';
 import type { QuizId, QuizProgressState } from './types/quiz';
@@ -33,6 +29,14 @@ import { isConferenceExplorationComplete } from './utils/exploration';
 import { relatedLinkToRoute } from './utils/navigation';
 import { setPageTitle } from './utils/setPageTitle';
 import { getQuizProgress, isQuizUnlocked, resetQuizProgress } from './utils/quizProgress';
+
+
+const QuizHubPage = lazy(() => import('./pages/QuizHubPage').then(({ QuizHubPage }) => ({ default: QuizHubPage })));
+const ChallengeModePage = lazy(() => import('./pages/ChallengeModePage').then(({ ChallengeModePage }) => ({ default: ChallengeModePage })));
+const FbsLandscapePage = lazy(() => import('./pages/FbsLandscapePage').then(({ FbsLandscapePage }) => ({ default: FbsLandscapePage })));
+const CoachesOrderingQuizPage = lazy(() => import('./pages/QuizPages').then(({ CoachesOrderingQuizPage }) => ({ default: CoachesOrderingQuizPage })));
+const HeismanMatchingQuizPage = lazy(() => import('./pages/QuizPages').then(({ HeismanMatchingQuizPage }) => ({ default: HeismanMatchingQuizPage })));
+const RivalriesQuizPage = lazy(() => import('./pages/QuizPages').then(({ RivalriesQuizPage }) => ({ default: RivalriesQuizPage })));
 
 const initialTimeline = [
   timelineEvents[4],
@@ -393,6 +397,7 @@ function App() {
       <ProgressTracker current={screen} completed={completed} />
       {screen !== 'home' && screen !== 'intro' && !screen.startsWith('quiz') && screen !== 'quizzes' && <TourNarrative chapter={currentChapter} museumMode={museumMode} />}
       <PageTransition transitionKey={screen}>
+        <Suspense fallback={<MuseumLoadingState />}>
         {screen === 'home' && (
           <HomeScreen
             museumMode={museumMode}
@@ -401,6 +406,10 @@ function App() {
             onToggleAudio={() => setAudioEnabled((value) => !value)}
             onStart={beginMuseum}
             onExploreFreely={exploreFreely}
+            onStartExploring={() => {
+              setMuseumMode('free');
+              moveTo('map');
+            }}
           />
         )}
         {screen === 'intro' && <IntroSequence onComplete={() => moveTo('map')} />}
@@ -537,10 +546,24 @@ function App() {
             }}
           />
         )}
+        </Suspense>
       </PageTransition>
       <ArtifactViewerModal artifact={activeArtifact} onClose={() => setActiveArtifact(null)} onNavigate={moveTo} />
       <AudioAura enabled={audioEnabled} />
     </Layout>
+  );
+}
+
+
+function MuseumLoadingState() {
+  return (
+    <section className="grid min-h-[55vh] place-items-center rounded-md border border-charcoal/10 bg-white/86 p-8 text-center shadow-exhibit" aria-live="polite" aria-busy="true">
+      <div>
+        <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-charcoal/10 border-t-crimson" />
+        <p className="mt-4 text-xs font-black uppercase tracking-[0.18em] text-brass">Loading exhibit</p>
+        <p className="mt-2 text-sm leading-6 text-charcoal/66">Preparing maps, logos, and museum data.</p>
+      </div>
+    </section>
   );
 }
 
@@ -551,6 +574,7 @@ function HomeScreen({
   onToggleAudio,
   onStart,
   onExploreFreely,
+  onStartExploring,
 }: {
   museumMode: MuseumMode;
   onModeChange: (mode: MuseumMode) => void;
@@ -558,6 +582,7 @@ function HomeScreen({
   onToggleAudio: () => void;
   onStart: () => void;
   onExploreFreely: () => void;
+  onStartExploring: () => void;
 }) {
   return (
     <HeroLanding
@@ -571,6 +596,7 @@ function HomeScreen({
         onModeChange('free');
         onExploreFreely();
       }}
+      onStartExploring={onStartExploring}
       onToggleAudio={onToggleAudio}
     />
   );
@@ -607,13 +633,13 @@ function ChampionshipsScreen({
       <SectionHero eyebrow="Championship Gallery" title="National Championships" meta="Official OU-recognized title seasons">
         OU recognizes seven national championship seasons. Select a title year to inspect the coach, story, games, and legacy.
       </SectionHero>
-      <div className="mb-5 flex gap-3 overflow-x-auto rounded-md border border-charcoal/10 bg-charcoal p-3 shadow-exhibit">
+      <div className="mb-5 grid grid-cols-2 gap-3 rounded-md border border-charcoal/10 bg-charcoal p-3 shadow-exhibit sm:flex sm:overflow-x-auto">
         {championships.map((title) => (
           <button
             key={title.id}
             type="button"
             onClick={() => onSelect(title.id)}
-            className={`min-w-32 rounded-md border px-4 py-3 text-left transition hover:-translate-y-0.5 ${
+            className={`min-w-0 rounded-md border px-4 py-3 text-left transition hover:-translate-y-0.5 sm:min-w-32 ${
               selected.id === title.id ? 'border-crimson bg-crimson text-white shadow-lg' : 'border-white/10 bg-white/10 text-cream hover:bg-white/18'
             }`}
           >
@@ -627,7 +653,7 @@ function ChampionshipsScreen({
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_18%,rgba(190,180,165,0.2),transparent_30%),radial-gradient(circle_at_20%_80%,rgba(132,22,23,0.24),transparent_32%)]" />
           <div className="relative">
             <p className="text-xs font-black uppercase tracking-[0.24em] text-gold">Title Season</p>
-            <h2 className="mt-2 font-display text-8xl font-bold leading-none sm:text-9xl">{selected.year}</h2>
+            <h2 className="mt-2 font-display text-[clamp(4rem,22vw,8rem)] font-bold leading-none">{selected.year}</h2>
             <p className="mt-4 max-w-xl font-display text-3xl font-bold leading-tight text-cream">{selected.title}</p>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-cream/72">{selected.summary}</p>
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
@@ -686,7 +712,7 @@ function CoachesScreen({ selected, onSelect, onNavigate }: { selected: CoachProf
       <SectionHero eyebrow="Leadership Wing" title="Important Coaches">
         Trace the leaders who shaped OU’s style, standards, and national reputation.
       </SectionHero>
-      <div className="mb-5 flex justify-end">
+      <div className="mb-5 flex justify-start sm:justify-end">
         <PrimaryButton onClick={() => onNavigate('quiz-coaches-order')}>Championship Coaches Quiz</PrimaryButton>
       </div>
       <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
@@ -754,7 +780,7 @@ function HeismansScreen({ selected, onSelect, onNavigate }: { selected: HeismanW
       <SectionHero eyebrow="Trophy Room" title="Seven Heisman Winners" accent="gold" meta="OU Heisman legacy: 1952-2018">
         Oklahoma has produced seven Heisman Trophy winners, from Billy Vessels to Kyler Murray.
       </SectionHero>
-      <div className="mb-5 flex justify-end">
+      <div className="mb-5 flex justify-start sm:justify-end">
         <PrimaryButton onClick={() => onNavigate('quiz-heisman-matching')}>Heisman Matching Game</PrimaryButton>
       </div>
       <div className="mb-5 rounded-md border border-charcoal/10 bg-charcoal p-4 shadow-exhibit">
@@ -912,10 +938,10 @@ function NflScreen(props: {
               key={player.id}
               type="button"
               onClick={() => props.onSelect(player.id)}
-              className={`rounded-md border p-4 text-left transition hover:-translate-y-0.5 ${props.selected.id === player.id ? 'border-gold bg-charcoal text-cream shadow-exhibit' : 'border-charcoal/10 bg-white/84 text-charcoal shadow-sm'}`}
+              className={`min-h-[44px] rounded-md border p-4 text-left transition hover:-translate-y-0.5 ${props.selected.id === player.id ? 'border-gold bg-charcoal text-cream shadow-exhibit' : 'border-charcoal/10 bg-white/84 text-charcoal shadow-sm'}`}
             >
-              <div className="flex items-start justify-between gap-3">
-              <div className="flex items-start gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex min-w-0 items-start gap-3">
                 <NFLLogoBadge
                   teamAbbreviation={getCurrentTeamAbbreviation(player)}
                   teamName={player.currentTeam}
@@ -979,7 +1005,7 @@ function NflScreen(props: {
             </div>
             <StatusBadge status={props.selected.nflStatus} />
           </div>
-          <h2 className="mt-2 font-display text-5xl font-bold leading-tight">{props.selected.name}</h2>
+          <h2 className="mt-2 break-words font-display text-[clamp(2.5rem,10vw,3rem)] font-bold leading-tight">{props.selected.name}</h2>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <StatPill label="Current Team" value={props.selected.currentTeam} />
             <StatPill label="Draft" value={`${props.selected.draftYear} Round ${props.selected.draftRound}, Pick ${props.selected.draftPick}`} />
@@ -1009,7 +1035,7 @@ function RivalriesScreen({
       <SectionHero eyebrow="Rivalry Gallery" title="Rivalries That Shaped the Story" meta="Texas | Nebraska | Oklahoma State | Missouri">
         Some opponents are more than names on a schedule. They define eras, conference meaning, and how fans remember time.
       </SectionHero>
-      <div className="mb-5 flex justify-end">
+      <div className="mb-5 flex justify-start sm:justify-end">
         <PrimaryButton onClick={() => onNavigate('quiz-rivalries')}>Rivalries Quiz</PrimaryButton>
       </div>
       <div className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
@@ -1062,7 +1088,7 @@ function FeatureScreen({ person, onNavigate }: { person: FeaturedPerson; onNavig
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_220px] xl:grid-cols-[minmax(0,1fr)_260px]">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.24em] text-gold">{person.category}</p>
-              <h1 className="mt-3 max-w-4xl font-display text-6xl font-bold leading-none sm:text-7xl">{person.name}</h1>
+              <h1 className="mt-3 max-w-4xl font-display text-[clamp(3rem,14vw,4.75rem)] font-bold leading-none">{person.name}</h1>
               <p className="mt-3 max-w-4xl font-display text-3xl font-bold leading-tight text-cream/88">{person.title}</p>
               <p className="mt-6 max-w-3xl text-base leading-7 text-cream/76">{person.heroSummary}</p>
               <div className="mt-8 grid gap-3 sm:grid-cols-3">
