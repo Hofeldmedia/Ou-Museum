@@ -43,7 +43,7 @@ function FbsSchoolLogoImage({
 }) {
   const [logoFailed, setLogoFailed] = useState(false);
   const [useFallback, setUseFallback] = useState(false);
-  const logo = getSchoolLogo('sec-current', school.id, school.name);
+  const logo = getSchoolLogo('sec-current', school.id, school.name, school.espnId);
   const logoSrc = useFallback ? logo.dark : logo.light;
 
   if (logoSrc && !logoFailed) {

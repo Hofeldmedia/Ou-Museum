@@ -153,7 +153,7 @@ export const conferenceEras: ConferenceEra[] = conferenceMembership.map((snapsho
       note: `${school.name} appears in this conference snapshot.`,
       ouContext: `This school helps illustrate how ${snapshot.conference} membership changed around OU.`,
     };
-    const logo = getSchoolLogo(snapshot.id, school.id, school.name);
+    const logo = getSchoolLogo(snapshot.id, school.id, school.name, school.espnId);
 
     return {
       ...school,

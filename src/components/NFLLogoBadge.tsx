@@ -4,6 +4,7 @@ import { getNFLLogo } from '../utils/getNFLLogo';
 type NFLLogoBadgeProps = {
   teamAbbreviation?: string | null;
   teamName: string;
+  espnId?: string | number;
   className?: string;
   imageClassName?: string;
 };

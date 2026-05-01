@@ -152,6 +152,10 @@ function getCurrentTeamAbbreviation(player: NFLSooner) {
   return nflTeamRegistry[player.currentTeam]?.abbreviation ?? null;
 }
 
+function getCurrentTeamEspnId(player: NFLSooner) {
+  return nflTeamRegistry[player.currentTeam]?.espnId ?? null;
+}
+
 function getPlayerTeamAbbreviations(player: NFLSooner) {
   return player.nflTeams
     .map((teamName) => ({ teamName, abbreviation: nflTeamRegistry[teamName]?.abbreviation ?? null }))
@@ -885,6 +889,7 @@ function NflScreen(props: {
                   <NFLLogoBadge
                     teamAbbreviation={getCurrentTeamAbbreviation(player)}
                     teamName={player.currentTeam}
+                    espnId={getCurrentTeamEspnId(player)}
                     className="h-8 w-8 border-white/15 bg-white"
                     imageClassName="p-1"
                   />
