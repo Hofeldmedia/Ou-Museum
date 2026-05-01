@@ -15,6 +15,13 @@ const FOCUS_ZOOM = 1.9;
 const ZOOM_STEP = 0.3;
 const MAX_ZOOM = 3.4;
 
+type ConferenceExplorerScreenProps = {
+  exploredSchools?: unknown;
+  onExploreSchool?: (eraId: string, schoolId: string) => void;
+  onComplete?: () => void;
+  onNavigate?: (...args: never[]) => void;
+};
+
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
@@ -323,7 +330,7 @@ function LandscapeSidePanel({ selectedSchool, selectedConference, visibleSchools
   );
 }
 
-export function FbsLandscapePage() {
+export function ConferenceExplorerScreen(_props: ConferenceExplorerScreenProps = {}) {
   const [selectedConferenceId, setSelectedConferenceId] = useState<FbsConferenceId | 'all'>('all');
 
   useEffect(() => {
@@ -399,3 +406,5 @@ export function FbsLandscapePage() {
     </section>
   );
 }
+
+export const FbsLandscapePage = ConferenceExplorerScreen;

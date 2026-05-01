@@ -310,6 +310,7 @@ export interface HeismanHometownMarker {
 export interface NFLDestinationMarker {
   id: string;
   teamAbbreviation: string;
+  teamEspnId?: string;
   teamName: string;
   city: string;
   state: string;

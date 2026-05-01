@@ -158,7 +158,7 @@ function getCurrentTeamEspnId(player: NFLSooner) {
 
 function getPlayerTeamAbbreviations(player: NFLSooner) {
   return player.nflTeams
-    .map((teamName) => ({ teamName, abbreviation: nflTeamRegistry[teamName]?.abbreviation ?? null }))
+    .map((teamName) => ({ teamName, abbreviation: nflTeamRegistry[teamName]?.abbreviation ?? null, espnId: nflTeamRegistry[teamName]?.espnId ?? null }))
     .filter((team, index, teams) => teams.findIndex((entry) => entry.teamName === team.teamName) === index);
 }
 
@@ -950,6 +950,7 @@ function NflScreen(props: {
                 <NFLLogoBadge
                   teamAbbreviation={getCurrentTeamAbbreviation(player)}
                   teamName={player.currentTeam}
+                  espnId={getCurrentTeamEspnId(player)}
                   className={`h-11 w-11 ${props.selected.id === player.id ? 'border-white/20 bg-white' : ''}`}
                   imageClassName="p-1.5"
                 />
@@ -967,6 +968,7 @@ function NflScreen(props: {
                     key={`${player.id}-${team.teamName}`}
                     teamAbbreviation={team.abbreviation}
                     teamName={team.teamName}
+                    espnId={team.espnId}
                     className="h-7 w-7"
                     imageClassName="p-0.5"
                   />
@@ -990,6 +992,7 @@ function NflScreen(props: {
               <NFLLogoBadge
                 teamAbbreviation={getCurrentTeamAbbreviation(props.selected)}
                 teamName={props.selected.currentTeam}
+                espnId={getCurrentTeamEspnId(props.selected)}
                 className="h-14 w-14"
                 imageClassName="p-1.5"
               />
@@ -1001,6 +1004,7 @@ function NflScreen(props: {
                       key={`${props.selected.id}-${team.teamName}`}
                       teamAbbreviation={team.abbreviation}
                       teamName={team.teamName}
+                      espnId={team.espnId}
                       className="h-7 w-7"
                       imageClassName="p-0.5"
                     />

@@ -4,7 +4,7 @@ import { getNFLLogo } from '../utils/getNFLLogo';
 type NFLLogoBadgeProps = {
   teamAbbreviation?: string | null;
   teamName: string;
-  espnId?: string | number;
+  espnId?: string | number | null;
   className?: string;
   imageClassName?: string;
 };
@@ -18,9 +18,9 @@ function getInitials(teamName: string) {
     .toUpperCase();
 }
 
-export function NFLLogoBadge({ teamAbbreviation, teamName, className = '', imageClassName = '' }: NFLLogoBadgeProps) {
+export function NFLLogoBadge({ teamAbbreviation, teamName, espnId, className = '', imageClassName = '' }: NFLLogoBadgeProps) {
   const [failed, setFailed] = useState(false);
-  const logoUrl = useMemo(() => (teamAbbreviation ? getNFLLogo(teamAbbreviation) : null), [teamAbbreviation]);
+  const logoUrl = useMemo(() => (teamAbbreviation ? getNFLLogo(teamAbbreviation, espnId) : null), [teamAbbreviation, espnId]);
 
   if (!logoUrl || failed) {
     return (

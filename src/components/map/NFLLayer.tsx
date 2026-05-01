@@ -66,7 +66,7 @@ export function NFLLayer({
             label={`${destination.teamName} in ${destination.city}`}
             tone="nfl"
             selected={selectedTeamName === destination.teamName}
-            imageUrl={getNFLLogo(destination.teamAbbreviation)}
+            imageUrl={getNFLLogo(destination.teamAbbreviation, destination.teamEspnId)}
             imageAlt={`${destination.teamName} logo`}
             fallbackText={destination.teamAbbreviation.toUpperCase()}
             markerClassName="animate-[nflMarkerIn_0.65s_cubic-bezier(0.22,1,0.36,1)_both]"

@@ -2,7 +2,7 @@ import { generatedSchoolLogos, generatedSchoolLogosByAbbreviation, generatedScho
 import { findLogoManifestEntry } from '../data/logoManifest';
 import type { EraId, LogoAccuracy, ResolvedLogoAsset } from '../types/content';
 
-export function getSchoolLogo(eraId: EraId, schoolId: string, schoolName = schoolId, espnId?: string | number): ResolvedLogoAsset {
+export function getSchoolLogo(eraId: EraId, schoolId: string, schoolName = schoolId, espnId?: string | number | null): ResolvedLogoAsset {
   const entry = findLogoManifestEntry(eraId, schoolId);
   const placeholderAsset = getLocalPlaceholderAsset(schoolId, entry?.fallbackAssetPath);
 
@@ -57,7 +57,7 @@ function toLegacyStatus(accuracy: LogoAccuracy): ResolvedLogoAsset['status'] {
 }
 
 
-function getGeneratedSchoolLogo(schoolId: string, schoolName: string, espnId?: string | number) {
+function getGeneratedSchoolLogo(schoolId: string, schoolName: string, espnId?: string | number | null) {
   const espnKey = espnId == null ? null : String(espnId);
   if (espnKey && generatedSchoolLogos[espnKey]) return generatedSchoolLogos[espnKey];
 
@@ -71,7 +71,7 @@ function getGeneratedSchoolLogo(schoolId: string, schoolName: string, espnId?: s
     generatedSchoolLogos[schoolName] ??
     generatedSchoolLogosBySlug[normalizedName] ??
     generatedSchoolLogosByAbbreviation[schoolId.toLowerCase()] ??
-    (alias ? generatedSchoolLogosBySlug[alias] ?? generatedSchoolLogosByAbbreviation[alias] : null) ??
+    (alias ? generatedSchoolLogos[alias] ?? generatedSchoolLogosBySlug[alias] ?? generatedSchoolLogosByAbbreviation[alias] : null) ??
     findGeneratedSchoolLogoByNamePrefix(normalizedName) ??
     null
   );

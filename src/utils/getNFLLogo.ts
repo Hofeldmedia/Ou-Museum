@@ -2,7 +2,7 @@ import { generatedNFLLogos, generatedNFLLogosByAbbreviation } from '../data/gene
 import { nflLogos } from '../data/nflLogos';
 import { OU_LOGO } from '../data/conferenceLogos';
 
-export function getNFLLogo(teamAbbreviation: string, espnId?: string | number): string | null {
+export function getNFLLogo(teamAbbreviation: string, espnId?: string | number | null): string | null {
   const abbreviation = teamAbbreviation.toLowerCase();
   const espnKey = espnId == null ? null : String(espnId);
   return (espnKey ? generatedNFLLogos[espnKey] : null) ?? nflLogos[abbreviation] ?? generatedNFLLogosByAbbreviation[abbreviation] ?? null;
