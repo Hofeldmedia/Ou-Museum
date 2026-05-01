@@ -44,6 +44,7 @@ export interface ConferenceSchool {
   state: string;
   latitude: number;
   longitude: number;
+  espnId?: string;
   isOU: boolean;
   note: string;
   ouContext: string;
@@ -84,6 +85,7 @@ export interface SchoolRegistryEntry {
   state: string;
   latitude: number;
   longitude: number;
+  espnId?: string;
   isOU?: boolean;
 }
 
@@ -321,6 +323,7 @@ export interface NFLMapPlayerRoute {
   playerId: string;
   playerName: string;
   teamAbbreviation: string;
+  teamEspnId?: string;
   position: string;
   active: boolean;
   featured: boolean;

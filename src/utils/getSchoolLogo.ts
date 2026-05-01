@@ -1,7 +1,8 @@
+import { generatedSchoolLogos, generatedSchoolLogosByAbbreviation, generatedSchoolLogosBySlug } from '../data/generatedSchoolLogos';
 import { findLogoManifestEntry } from '../data/logoManifest';
 import type { EraId, LogoAccuracy, ResolvedLogoAsset } from '../types/content';
 
-export function getSchoolLogo(eraId: EraId, schoolId: string, schoolName = schoolId): ResolvedLogoAsset {
+export function getSchoolLogo(eraId: EraId, schoolId: string, schoolName = schoolId, espnId?: string | number): ResolvedLogoAsset {
   const entry = findLogoManifestEntry(eraId, schoolId);
   const placeholderAsset = getLocalPlaceholderAsset(schoolId, entry?.fallbackAssetPath);
 
@@ -14,6 +15,20 @@ export function getSchoolLogo(eraId: EraId, schoolId: string, schoolName = schoo
       status: toLegacyStatus(entry.accuracy),
       note: entry.note,
       source: 'manifest',
+      manifestEntry: entry,
+    };
+  }
+
+  const generatedLogo = getGeneratedSchoolLogo(schoolId, schoolName, espnId);
+  if (generatedLogo) {
+    return {
+      light: generatedLogo,
+      dark: generatedLogo,
+      alt: `${schoolName} logo`,
+      accuracy: 'approximate',
+      status: 'approximate',
+      note: 'Generated from a locally cached ESPN logo asset.',
+      source: 'espn',
       manifestEntry: entry,
     };
   }
@@ -40,6 +55,50 @@ function toLegacyStatus(accuracy: LogoAccuracy): ResolvedLogoAsset['status'] {
   if (accuracy === 'exact') return 'era-accurate';
   return accuracy;
 }
+
+
+function getGeneratedSchoolLogo(schoolId: string, schoolName: string, espnId?: string | number) {
+  const espnKey = espnId == null ? null : String(espnId);
+  if (espnKey && generatedSchoolLogos[espnKey]) return generatedSchoolLogos[espnKey];
+
+  const normalizedId = normalizeLogoKey(schoolId);
+  const normalizedName = normalizeLogoKey(schoolName);
+
+  const alias = generatedSchoolLogoAliases[normalizedId];
+
+  return (
+    generatedSchoolLogosBySlug[normalizedId] ??
+    generatedSchoolLogos[schoolName] ??
+    generatedSchoolLogosBySlug[normalizedName] ??
+    generatedSchoolLogosByAbbreviation[schoolId.toLowerCase()] ??
+    (alias ? generatedSchoolLogosBySlug[alias] ?? generatedSchoolLogosByAbbreviation[alias] : null) ??
+    findGeneratedSchoolLogoByNamePrefix(normalizedName) ??
+    null
+  );
+}
+
+function findGeneratedSchoolLogoByNamePrefix(normalizedName: string) {
+  if (!normalizedName) return null;
+  const match = Object.entries(generatedSchoolLogosBySlug).find(([slug]) => slug.startsWith(`${normalizedName}-`));
+  return match?.[1] ?? null;
+}
+
+function normalizeLogoKey(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+const generatedSchoolLogoAliases: Record<string, string> = {
+  'appalachian-state': 'app-state-mountaineers',
+  fiu: 'fiu',
+  hawaii: 'hawaii-rainbow-warriors',
+  'louisiana-monroe': 'ulm',
+  'san-jose-state': 'san-jose-state-spartans',
+  'texas-am': '245',
+};
 
 const GENERIC_SCHOOL_PLACEHOLDER = '/assets/logos/placeholders/generic-school.svg';
 

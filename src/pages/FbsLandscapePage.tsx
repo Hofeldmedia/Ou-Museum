@@ -198,10 +198,10 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
       </div>
       <div
         ref={viewportRef}
-        className={`relative aspect-[1.15] min-h-[320px] overflow-hidden rounded-md border border-white/10 bg-[#dbe4ea] sm:aspect-[1.35] md:aspect-[1.55] md:min-h-[520px] ${zoom > 1 ? (dragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'}`}
+        className={`relative aspect-[1.15] min-h-[320px] touch-none overflow-hidden rounded-md border border-white/10 bg-[#dbe4ea] sm:aspect-[1.35] md:aspect-[1.55] md:min-h-[520px] ${zoom > 1 ? (dragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'}`}
         onPointerDown={startPan}
       >
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.42),rgba(219,228,234,0.95))]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.42),rgba(219,228,234,0.95))]" />
         <div className="absolute inset-0 transition-transform duration-300 ease-out will-change-transform" style={{ transformOrigin: '0 0', transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}>
           <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${usMapViewBox.width} ${usMapViewBox.height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Map of the United States">
             <path d={usNationPath} fill="#f8f9fb" stroke="#323232" strokeWidth={1.6} />
@@ -211,10 +211,10 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
             <FbsMarker key={school.id} school={school} selected={selectedSchool?.id === school.id} allMode={selectedConferenceId === 'all'} onSelect={() => selectSchool(school)} />
           ))}
         </div>
-        <div className="absolute left-4 top-4 hidden max-w-[20rem] rounded-md border border-charcoal/15 bg-white/82 px-3 py-2 text-xs font-bold leading-5 text-charcoal/75 shadow-lg backdrop-blur md:block">
+        <div className="pointer-events-none absolute left-4 top-4 hidden max-w-[20rem] rounded-md border border-charcoal/15 bg-white/82 px-3 py-2 text-xs font-bold leading-5 text-charcoal/75 shadow-lg backdrop-blur md:block">
           Labels appear on hover or selection to keep the dense national map readable.
         </div>
-        <div className="absolute bottom-4 right-4 rounded-md border border-charcoal/10 bg-white/82 px-3 py-2 text-right text-xs font-bold text-charcoal/68 backdrop-blur">
+        <div className="pointer-events-none absolute bottom-4 right-4 rounded-md border border-charcoal/10 bg-white/82 px-3 py-2 text-right text-xs font-bold text-charcoal/68 backdrop-blur">
           {schools.length} visible schools
         </div>
         <div className="pointer-events-none absolute bottom-4 left-4 rounded-md border border-charcoal/10 bg-white/82 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-charcoal/58 shadow-sm">

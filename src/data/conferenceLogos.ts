@@ -1,16 +1,16 @@
-import accLogo from '/assets/conference-logos/acc.png?url';
-import americanLogo from '/assets/conference-logos/american.png?url';
-import big12NewLogo from '/assets/conference-logos/big-12-new.png?url';
-import big12OldLogo from '/assets/conference-logos/big-12-old.png?url';
-import bigEightLogo from '/assets/conference-logos/big-eight.png?url';
-import bigTenLogo from '/assets/conference-logos/big-ten.png?url';
-import conferenceUsaLogo from '/assets/conference-logos/conference-usa.png?url';
-import independentsLogo from '/assets/conference-logos/independents.png?url';
-import macLogo from '/assets/conference-logos/mac.png?url';
-import mountainWestLogo from '/assets/conference-logos/mountain-west.png?url';
-import pac12Logo from '/assets/conference-logos/pac-12-new.png?url';
-import secLogo from '/assets/conference-logos/sec.png?url';
-import sunBeltLogo from '/assets/conference-logos/sun-belt.png?url';
+const accLogo = '/assets/conference-logos/acc.png';
+const americanLogo = '/assets/conference-logos/american.png';
+const big12NewLogo = '/assets/conference-logos/big-12-new.png';
+const big12OldLogo = '/assets/conference-logos/big-12-old.png';
+const bigEightLogo = '/assets/conference-logos/big-eight.png';
+const bigTenLogo = '/assets/conference-logos/big-ten.png';
+const conferenceUsaLogo = '/assets/conference-logos/conference-usa.png';
+const independentsLogo = '/assets/conference-logos/independents.png';
+const macLogo = '/assets/conference-logos/mac.png';
+const mountainWestLogo = '/assets/conference-logos/mountain-west.png';
+const pac12Logo = '/assets/conference-logos/pac-12-new.png';
+const secLogo = '/assets/conference-logos/sec.png';
+const sunBeltLogo = '/assets/conference-logos/sun-belt.png';
 
 export const OU_LOGO = '/assets/intro-logos/OU.png';
 

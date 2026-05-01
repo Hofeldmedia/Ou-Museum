@@ -18,7 +18,7 @@ export function MuseumLayout({ children, theme = 'light' }: MuseumLayoutProps) {
       <div className="mx-auto flex min-h-screen w-full max-w-[1200px] flex-col px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
         {children}
         <footer className="mt-8 border-t border-charcoal/10 py-5 text-center text-xs font-bold uppercase tracking-[0.16em] text-charcoal/48">
-          Created by Patrick Hofeld
+          Created by Hofeld Media, LLC
         </footer>
       </div>
     </main>

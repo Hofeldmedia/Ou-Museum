@@ -1,0 +1,481 @@
+{
+  "collegeFootball": {
+    "noEspnLogoFound": [
+      {
+        "id": "2562",
+        "displayName": "Adrian Saints",
+        "abbreviation": "sh",
+        "slug": "adrian-saints"
+      },
+      {
+        "id": "3111",
+        "displayName": "Apprentice School Builders",
+        "abbreviation": "appre",
+        "slug": "apprentice-school-builders"
+      },
+      {
+        "id": "3178",
+        "displayName": "Ave Maria University Gyrenes",
+        "abbreviation": "ave m",
+        "slug": "ave-maria-university-gyrenes"
+      },
+      {
+        "id": "2048",
+        "displayName": "Avila University Eagles",
+        "abbreviation": "avila",
+        "slug": "avila-university-eagles"
+      },
+      {
+        "id": "16111",
+        "displayName": "Benedictine College Ravens",
+        "abbreviation": "benc",
+        "slug": "benedictine-college-ravens"
+      },
+      {
+        "id": "492",
+        "displayName": "Bethany (Ks)",
+        "abbreviation": "betha",
+        "slug": "bethany-ks"
+      },
+      {
+        "id": "495",
+        "displayName": "BLUEFIELD Ramblin' Rams",
+        "abbreviation": "blu",
+        "slug": "bluefield-ramblin-rams"
+      },
+      {
+        "id": "2080",
+        "displayName": "British Columbia British Col",
+        "abbreviation": "bbm",
+        "slug": "british-columbia-british-col"
+      },
+      {
+        "id": "129738",
+        "displayName": "Calvin Knights",
+        "abbreviation": "calu",
+        "slug": "calvin-knights"
+      },
+      {
+        "id": "101442",
+        "displayName": "Centenary (LA) Gentlemen",
+        "abbreviation": "ctla",
+        "slug": "centenary-la-gentlemen"
+      },
+      {
+        "id": "2860",
+        "displayName": "Central Methodist Eagles",
+        "abbreviation": "cdf",
+        "slug": "central-methodist-eagles"
+      },
+      {
+        "id": "3253",
+        "displayName": "Charlotte Saints",
+        "abbreviation": "colle",
+        "slug": "charlotte-saints"
+      },
+      {
+        "id": "3210",
+        "displayName": "Cole College Jaguars",
+        "abbreviation": "cole",
+        "slug": "cole-college-jaguars"
+      },
+      {
+        "id": "108382",
+        "displayName": "College of Idaho Yotes",
+        "abbreviation": "coi",
+        "slug": "college-of-idaho-yotes"
+      },
+      {
+        "id": "507",
+        "displayName": "Concordia University Nebraska Clippers",
+        "abbreviation": "concone",
+        "slug": "concordia-university-nebraska-clippers"
+      },
+      {
+        "id": "2985",
+        "displayName": "Concordia-Michigan Cardinals",
+        "abbreviation": "concmi",
+        "slug": "concordia-michigan-cardinals"
+      },
+      {
+        "id": "510",
+        "displayName": "Culver-Stockton College Wildcats",
+        "abbreviation": "culve",
+        "slug": "culver-stockton-college-wildcats"
+      },
+      {
+        "id": "2161",
+        "displayName": "Cumberland (TN) Bulldogs",
+        "abbreviation": "cumbtn",
+        "slug": "cumberland-tn-bulldogs"
+      },
+      {
+        "id": "511",
+        "displayName": "Cumberlands Indians",
+        "abbreviation": "cmbs",
+        "slug": "cumberlands-indians"
+      },
+      {
+        "id": "513",
+        "displayName": "Dakota Wesleyan Tigers",
+        "abbreviation": "dwu",
+        "slug": "dakota-wesleyan-tigers"
+      },
+      {
+        "id": "2202",
+        "displayName": "Eastern Oregon",
+        "abbreviation": "eore",
+        "slug": "eastern-oregon"
+      },
+      {
+        "id": "122775",
+        "displayName": "Elgin Eagles",
+        "abbreviation": "judso",
+        "slug": "elgin-eagles"
+      },
+      {
+        "id": "3236",
+        "displayName": "Erie Kats",
+        "abbreviation": "ecc",
+        "slug": "erie-kats"
+      },
+      {
+        "id": "2865",
+        "displayName": "Evangel University Crusaders",
+        "abbreviation": "eva",
+        "slug": "evangel-university-crusaders"
+      },
+      {
+        "id": "2219",
+        "displayName": "Faulkner University Eagles",
+        "abbreviation": "faulkner",
+        "slug": "faulkner-university-eagles"
+      },
+      {
+        "id": "125762",
+        "displayName": "Florida Memorial University Lions",
+        "abbreviation": "flamemrl",
+        "slug": "florida-memorial-university-lions"
+      },
+      {
+        "id": "527",
+        "displayName": "Friends University Friends",
+        "abbreviation": "frie",
+        "slug": "friends-university-friends"
+      },
+      {
+        "id": "535",
+        "displayName": "Haskell Indian Nations Univ Jayhawks",
+        "abbreviation": "haskell",
+        "slug": "haskell-indian-nations-univ-jayhawks"
+      },
+      {
+        "id": "108354",
+        "displayName": "Holland College Hurricanes",
+        "abbreviation": "hol",
+        "slug": "holland-college-hurricanes"
+      },
+      {
+        "id": "111756",
+        "displayName": "Indiana Wesleyan Wildcats",
+        "abbreviation": "inwesl",
+        "slug": "indiana-wesleyan-wildcats"
+      },
+      {
+        "id": "2939",
+        "displayName": "Jamestown Jimmies",
+        "abbreviation": "uj",
+        "slug": "jamestown-jimmies"
+      },
+      {
+        "id": "547",
+        "displayName": "Kansas Wesleyan Ks Wesleyan",
+        "abbreviation": "kansa",
+        "slug": "kansas-wesleyan-ks-wesleyan"
+      },
+      {
+        "id": "126110",
+        "displayName": "Keiser University Keiser",
+        "abbreviation": "keiser",
+        "slug": "keiser-university-keiser"
+      },
+      {
+        "id": "3077",
+        "displayName": "Kentucky Christian Knights",
+        "abbreviation": "kychr",
+        "slug": "kentucky-christian-knights"
+      },
+      {
+        "id": "267",
+        "displayName": "LAKELAND Fires",
+        "abbreviation": "seu",
+        "slug": "lakeland-fires"
+      },
+      {
+        "id": "2324",
+        "displayName": "Langston Lions",
+        "abbreviation": "lngt",
+        "slug": "langston-lions"
+      },
+      {
+        "id": "111610",
+        "displayName": "Laurinburg Knights",
+        "abbreviation": "st. a",
+        "slug": "laurinburg-knights"
+      },
+      {
+        "id": "124179",
+        "displayName": "Lincoln (CA) Oaklanders",
+        "abbreviation": "lnca",
+        "slug": "lincoln-ca-oaklanders"
+      },
+      {
+        "id": "3209",
+        "displayName": "Lindenwood Belleville Lynx",
+        "abbreviation": "linb",
+        "slug": "lindenwood-belleville-lynx"
+      },
+      {
+        "id": "2877",
+        "displayName": "Lindsey Wilson LINDSEY",
+        "abbreviation": "lwu",
+        "slug": "lindsey-wilson-lindsey"
+      },
+      {
+        "id": "124386",
+        "displayName": "Little Rock Buffaloes",
+        "abbreviation": "arkan",
+        "slug": "little-rock-buffaloes"
+      },
+      {
+        "id": "101161",
+        "displayName": "Lyon Scots",
+        "abbreviation": "lyon",
+        "slug": "lyon-scots"
+      },
+      {
+        "id": "126146",
+        "displayName": "MADONNA",
+        "abbreviation": "mdnn",
+        "slug": "madonna"
+      },
+      {
+        "id": "274",
+        "displayName": "Maine Maritime Mariners",
+        "abbreviation": "umma",
+        "slug": "maine-maritime-mariners"
+      },
+      {
+        "id": "2770",
+        "displayName": "Manitoba",
+        "abbreviation": "man",
+        "slug": "manitoba"
+      },
+      {
+        "id": "2366",
+        "displayName": "Marian College Marian",
+        "abbreviation": "marianin",
+        "slug": "marian-college-marian"
+      },
+      {
+        "id": "561",
+        "displayName": "Mayville State Comets",
+        "abbreviation": "mayville",
+        "slug": "mayville-state-comets"
+      },
+      {
+        "id": "565",
+        "displayName": "Midland Lutheran College Midland Lutheran",
+        "abbreviation": "midland",
+        "slug": "midland-lutheran-college-midland-lutheran"
+      },
+      {
+        "id": "2395",
+        "displayName": "Midwestern State Mustangs",
+        "abbreviation": "mid",
+        "slug": "midwestern-state-mustangs"
+      },
+      {
+        "id": "3100",
+        "displayName": "Monterrey Tech Borregos",
+        "abbreviation": "mon",
+        "slug": "monterrey-tech-borregos"
+      },
+      {
+        "id": "425",
+        "displayName": "Northern State Wolves",
+        "abbreviation": "nor",
+        "slug": "northern-state-wolves"
+      },
+      {
+        "id": "3161",
+        "displayName": "Ohio State Newark Titans",
+        "abbreviation": "osu",
+        "slug": "ohio-state-newark-titans"
+      },
+      {
+        "id": "2824",
+        "displayName": "Oklahoma Panhandle St Ok Panhandle St",
+        "abbreviation": "oklah",
+        "slug": "oklahoma-panhandle-st-ok-panhandle-st"
+      },
+      {
+        "id": "108358",
+        "displayName": "Phoenix Firestorm",
+        "abbreviation": "azchr",
+        "slug": "phoenix-firestorm"
+      },
+      {
+        "id": "3179",
+        "displayName": "Point University Skyhawks",
+        "abbreviation": "point",
+        "slug": "point-university-skyhawks"
+      },
+      {
+        "id": "2890",
+        "displayName": "Reinhardt University Eagles",
+        "abbreviation": "rein",
+        "slug": "reinhardt-university-eagles"
+      },
+      {
+        "id": "599",
+        "displayName": "Robert Morris University-Illinois Lakers",
+        "abbreviation": "roose",
+        "slug": "robert-morris-university-illinois-lakers"
+      },
+      {
+        "id": "127991",
+        "displayName": "Roosevelt Lakers",
+        "abbreviation": "roo",
+        "slug": "roosevelt-lakers"
+      },
+      {
+        "id": "129758",
+        "displayName": "Simpson University (Ca) Simpuca",
+        "abbreviation": "",
+        "slug": "simpson-university-ca-simpuca"
+      },
+      {
+        "id": "616",
+        "displayName": "Southwestern College Moundbuilders",
+        "abbreviation": "scks",
+        "slug": "southwestern-college-moundbuilders"
+      },
+      {
+        "id": "2595",
+        "displayName": "St Francis Illinois Fighting Saints",
+        "abbreviation": "sfil",
+        "slug": "st-francis-illinois-fighting-saints"
+      },
+      {
+        "id": "3254",
+        "displayName": "St. Petersburg Glory Eagles",
+        "abbreviation": "uffl",
+        "slug": "st-petersburg-glory-eagles"
+      },
+      {
+        "id": "2615",
+        "displayName": "St. Xavier IL Cougars",
+        "abbreviation": "stx",
+        "slug": "st-xavier-il-cougars"
+      },
+      {
+        "id": "618",
+        "displayName": "Sterling College Sterling Ks",
+        "abbreviation": "stcks",
+        "slug": "sterling-college-sterling-ks"
+      },
+      {
+        "id": "620",
+        "displayName": "Taylor Trojans",
+        "abbreviation": "taylor",
+        "slug": "taylor-trojans"
+      },
+      {
+        "id": "2646",
+        "displayName": "Thomas More Saints",
+        "abbreviation": "tmor",
+        "slug": "thomas-more-saints"
+      },
+      {
+        "id": "3214",
+        "displayName": "Trinity Bible College Lions",
+        "abbreviation": "trinbib",
+        "slug": "trinity-bible-college-lions"
+      },
+      {
+        "id": "3237",
+        "displayName": "Troy Vikings",
+        "abbreviation": "hvcc",
+        "slug": "troy-vikings"
+      },
+      {
+        "id": "3212",
+        "displayName": "University Of Mexico Mexico U",
+        "abbreviation": "umex",
+        "slug": "university-of-mexico-mexico-u"
+      },
+      {
+        "id": "628",
+        "displayName": "Valley City State Valley City St",
+        "abbreviation": "valcst",
+        "slug": "valley-city-state-valley-city-st"
+      },
+      {
+        "id": "2355",
+        "displayName": "Virginia University Of Lynchburg Dragons",
+        "abbreviation": "virlyn",
+        "slug": "virginia-university-of-lynchburg-dragons"
+      },
+      {
+        "id": "3080",
+        "displayName": "Waldorf College Warriors",
+        "abbreviation": "wal",
+        "slug": "waldorf-college-warriors"
+      },
+      {
+        "id": "2683",
+        "displayName": "Warner University Royals",
+        "abbreviation": "warne",
+        "slug": "warner-university-royals"
+      },
+      {
+        "id": "630",
+        "displayName": "Wayland Baptist Pioneers",
+        "abbreviation": "wayland",
+        "slug": "wayland-baptist-pioneers"
+      },
+      {
+        "id": "2691",
+        "displayName": "Webber International Warriors",
+        "abbreviation": "webbint",
+        "slug": "webber-international-warriors"
+      },
+      {
+        "id": "3211",
+        "displayName": "West Memphis Crusaders",
+        "abbreviation": "fai",
+        "slug": "west-memphis-crusaders"
+      },
+      {
+        "id": "2912",
+        "displayName": "William Penn Statesmen",
+        "abbreviation": "willpenn",
+        "slug": "william-penn-statesmen"
+      },
+      {
+        "id": "3130",
+        "displayName": "Williamson Trade School Mechanics",
+        "abbreviation": "wil",
+        "slug": "williamson-trade-school-mechanics"
+      }
+    ],
+    "failedDownloads": [],
+    "appTeamsMissingFromGeneratedMaps": []
+  },
+  "nfl": {
+    "noEspnLogoFound": [],
+    "failedDownloads": [],
+    "appTeamsMissingFromGeneratedMaps": []
+  }
+}

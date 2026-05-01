@@ -27,14 +27,13 @@ export function SectionHero({
   return (
     <section className="mb-6 overflow-hidden rounded-md border border-charcoal/10 bg-white/88 shadow-exhibit backdrop-blur">
       <div className={`h-2 ${color}`} />
-      <div className="grid gap-5 p-4 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div className="p-4 sm:p-6">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.24em] text-brass">{eyebrow}</p>
           <h1 className="mt-2 font-display text-[clamp(2rem,8vw,3.5rem)] font-bold leading-tight text-charcoal">{title}</h1>
           <p className="mt-3 max-w-3xl text-base leading-7 text-charcoal/72">{children}</p>
           {meta && <p className="mt-4 inline-flex max-w-full rounded-sm bg-charcoal px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-cream">{meta}</p>}
         </div>
-        <div className="hidden h-28 w-44 rounded-md border border-charcoal/10 bg-charcoal map-line shadow-inner lg:block" aria-hidden="true" />
       </div>
     </section>
   );

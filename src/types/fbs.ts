@@ -22,6 +22,7 @@ export type FbsSchool = {
   state: string;
   latitude: number;
   longitude: number;
+  espnId?: string;
   logoUrl?: string;
   logoPath?: string;
   stadiumName?: string;
