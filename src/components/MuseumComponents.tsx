@@ -1,4 +1,4 @@
-import { ArrowRight, FileText, Link2, ListChecks, X } from 'lucide-react';
+import { ArrowRight, ChevronDown, FileText, Link2, ListChecks, X } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import type { Screen } from '../types';
 import type { MuseumArtifact, RelatedLink, SignatureMoment } from '../types/content';
@@ -25,14 +25,14 @@ export function SectionHero({
   }[accent];
 
   return (
-    <section className="mb-6 overflow-hidden rounded-md border border-charcoal/10 bg-white/88 shadow-exhibit backdrop-blur">
-      <div className={`h-2 ${color}`} />
-      <div className="p-4 sm:p-6">
+    <section className="mb-5 border-b border-charcoal/10 bg-white/70 pb-5 backdrop-blur">
+      <div className={`mb-4 h-1 w-16 rounded-full ${color}`} />
+      <div>
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.24em] text-brass">{eyebrow}</p>
-          <h1 className="mt-2 font-display text-[clamp(2rem,8vw,3.5rem)] font-bold leading-tight text-charcoal">{title}</h1>
-          <p className="mt-3 max-w-3xl text-base leading-7 text-charcoal/72">{children}</p>
-          {meta && <p className="mt-4 inline-flex max-w-full rounded-sm bg-charcoal px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-cream">{meta}</p>}
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-brass">{eyebrow}</p>
+          <h1 className="mt-2 font-display text-[clamp(2rem,8vw,3.35rem)] font-bold leading-tight text-charcoal">{title}</h1>
+          <p className="mt-3 max-w-2xl text-base leading-7 text-charcoal/68">{children}</p>
+          {meta && <p className="mt-3 inline-flex max-w-full rounded-sm bg-charcoal/8 px-3 py-1.5 text-xs font-black uppercase tracking-[0.14em] text-charcoal/68">{meta}</p>}
         </div>
       </div>
     </section>
@@ -120,11 +120,11 @@ export function FeatureBanner({
 
 export function GalleryPlaque({ eyebrow, title, children }: { eyebrow: string; title: string; children: ReactNode }) {
   return (
-    <section className="mb-5 rounded-md border border-gold/35 bg-charcoal p-5 text-cream shadow-exhibit">
-      <p className="text-xs font-black uppercase tracking-[0.24em] text-gold">{eyebrow}</p>
-      <h2 className="mt-2 font-display text-3xl font-bold">{title}</h2>
-      <p className="mt-2 max-w-4xl font-editorial text-sm leading-6 text-cream/76">{children}</p>
-    </section>
+    <aside className="mb-5 rounded-md border-l-4 border-gold bg-white/72 px-4 py-3">
+      <p className="text-[11px] font-black uppercase tracking-[0.18em] text-brass">{eyebrow}</p>
+      <h2 className="mt-1 font-display text-2xl font-bold text-charcoal">{title}</h2>
+      <p className="mt-1 max-w-4xl text-sm leading-6 text-charcoal/68">{children}</p>
+    </aside>
   );
 }
 
@@ -140,7 +140,7 @@ export function HistoricalNotesPanel({
 }) {
   if (!notes?.length) {
     return (
-      <section className="rounded-md border border-charcoal/10 bg-white/84 p-4 shadow-sm">
+      <section className="rounded-md border border-charcoal/10 bg-white/72 p-4">
         <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-brass">
           <ListChecks className="h-4 w-4" aria-hidden="true" /> {title}
         </p>
@@ -150,25 +150,26 @@ export function HistoricalNotesPanel({
   }
 
   return (
-    <section className={`rounded-md border border-charcoal/10 bg-white/88 shadow-sm ${compact ? 'p-4' : 'p-5'}`}>
-      <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-brass">
-        <ListChecks className="h-4 w-4" aria-hidden="true" /> {title}
-      </p>
-      <ul className="mt-3 grid gap-2">
+    <details className={`group rounded-md border border-charcoal/10 bg-white/76 ${compact ? 'p-3' : 'p-4'}`} open={!compact}>
+      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-xs font-black uppercase tracking-[0.16em] text-brass focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-crimson/15">
+        <span className="flex items-center gap-2"><ListChecks className="h-4 w-4" aria-hidden="true" /> {title}</span>
+        <ChevronDown className="h-4 w-4 transition group-open:rotate-180" aria-hidden="true" />
+      </summary>
+      <ul className="mt-2 grid gap-1.5 border-t border-charcoal/10 pt-3">
         {notes.map((note) => (
-          <li key={note} className="grid grid-cols-[0.55rem_1fr] gap-2 text-sm leading-6 text-charcoal/72">
-            <span className="mt-2 h-2 w-2 rounded-full bg-crimson" aria-hidden="true" />
+          <li key={note} className="grid grid-cols-[0.45rem_1fr] gap-2 text-sm leading-6 text-charcoal/70">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-crimson" aria-hidden="true" />
             <span>{note}</span>
           </li>
         ))}
       </ul>
-    </section>
+    </details>
   );
 }
 
 export function ReflectionPrompt({ question }: { question: string }) {
   return (
-    <aside className="mt-5 rounded-md border border-charcoal/10 bg-cream/90 p-5 shadow-sm">
+    <aside className="mt-5 rounded-md border border-charcoal/10 bg-cream/70 p-4">
       <p className="text-xs font-black uppercase tracking-[0.2em] text-brass">Reflection Prompt</p>
       <p className="mt-2 font-editorial text-2xl font-bold leading-tight text-charcoal">{question}</p>
     </aside>
@@ -180,7 +181,7 @@ export function ArtifactCard({ artifact, onOpen }: { artifact: MuseumArtifact; o
     <button
       type="button"
       onClick={() => onOpen(artifact)}
-      className="group relative overflow-hidden rounded-md border border-charcoal/10 bg-white/85 p-4 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-exhibit"
+      className="group relative overflow-hidden rounded-md border border-charcoal/10 bg-white/86 p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:border-crimson/35 hover:bg-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-crimson/15"
     >
       <span className="absolute inset-x-0 top-0 h-1 bg-gold" />
       <FileText className="mb-4 h-8 w-8 text-crimson transition group-hover:scale-110" aria-hidden="true" />

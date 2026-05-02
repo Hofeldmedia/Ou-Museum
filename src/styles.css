@@ -80,7 +80,7 @@ h1 {
 }
 
 p {
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-size: inherit;
 }
 
 @media (min-width: 768px) {

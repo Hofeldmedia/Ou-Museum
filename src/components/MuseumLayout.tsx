@@ -58,10 +58,10 @@ export function SectionNav({
           disabled={isLocked(section.screen)}
           className={`shrink-0 rounded-md border px-3 py-2 text-xs font-black uppercase tracking-[0.14em] transition disabled:cursor-not-allowed disabled:opacity-45 ${
             current === section.screen
-              ? 'border-charcoal bg-charcoal text-cream shadow-lg'
+              ? 'border-charcoal bg-charcoal text-cream'
               : isLocked(section.screen)
                 ? 'border-charcoal/8 bg-white/45 text-charcoal/40'
-                : 'border-charcoal/10 bg-white/70 text-charcoal/62 hover:-translate-y-0.5 hover:border-gold hover:bg-cream hover:text-charcoal'
+                : 'border-charcoal/10 bg-white/70 text-charcoal/62 hover:border-crimson/30 hover:bg-cream hover:text-charcoal'
           }`}
         >
           {section.label}

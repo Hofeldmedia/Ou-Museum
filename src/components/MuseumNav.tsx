@@ -1,4 +1,4 @@
-import { BookOpenCheck, Map, Volume2, VolumeX } from 'lucide-react';
+import { BookOpenCheck, Volume2, VolumeX } from 'lucide-react';
 import { siteSections } from '../data/siteSections';
 import type { Screen } from '../types';
 import type { MuseumMode } from '../types/content';
@@ -35,19 +35,8 @@ export function MuseumNav({ current, onNavigate, mapComplete, timelineSolved, ma
     return false;
   };
 
-  const nextStepLabel =
-    museumMode === 'free'
-      ? 'Free Explore active'
-      : !mapComplete
-        ? 'Next: finish Conference Gallery'
-        : !timelineSolved
-          ? 'Next: solve the timeline'
-          : !matchComplete
-            ? 'Next: complete the connections activity'
-            : 'Capstone unlocked';
-
   return (
-    <header className="sticky top-0 z-40 mb-5 rounded-md border border-charcoal/10 bg-white/90 p-3 shadow-exhibit backdrop-blur sm:top-3">
+    <header className="sticky top-0 z-40 mb-5 rounded-md border border-charcoal/10 bg-white/94 p-3 shadow-sm backdrop-blur sm:top-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <button
           type="button"
@@ -66,20 +55,16 @@ export function MuseumNav({ current, onNavigate, mapComplete, timelineSolved, ma
             <span className="text-xs font-black uppercase tracking-[0.16em] text-brass">{museumMode === 'guided' ? 'Guided tour' : 'Free explore'}</span>
           </span>
         </button>
-        <div className="hidden rounded-sm bg-charcoal px-3 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-cream lg:block">
-          {nextStepLabel}
-        </div>
         <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto">
           <button
             type="button"
             onClick={onToggleAudio}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-charcoal/15 bg-white text-charcoal transition hover:bg-cream"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-charcoal/15 bg-white text-charcoal transition hover:border-crimson/30 hover:bg-cream focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-crimson/15"
             aria-label={audioEnabled ? 'Mute museum audio' : 'Enable subtle museum audio'}
             aria-pressed={audioEnabled}
           >
             {audioEnabled ? <Volume2 className="h-5 w-5" aria-hidden="true" /> : <VolumeX className="h-5 w-5" aria-hidden="true" />}
           </button>
-          <Map className="hidden h-4 w-4 text-charcoal/45 sm:block" aria-hidden="true" />
           <select
             aria-label="Jump to museum section"
             value={selectValue}
@@ -95,7 +80,7 @@ export function MuseumNav({ current, onNavigate, mapComplete, timelineSolved, ma
           <button
             type="button"
             onClick={() => onNavigate('summary')}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-charcoal/15 bg-white text-charcoal transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-45"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-charcoal/15 bg-white text-charcoal transition hover:border-crimson/30 hover:bg-cream focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-crimson/15 disabled:cursor-not-allowed disabled:opacity-45"
             aria-label={!isLocked('summary') ? 'Open completion summary' : 'Completion summary locked until assessments are complete'}
             disabled={isLocked('summary')}
           >

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode, type WheelEvent as ReactWheelEvent } from 'react';
 import type { MapLayerId, MapLegendItem } from '../../types/content';
 import { clampMapPan, getCenteredMapPan, hasValidMapCoordinates } from '../../utils/mapFocus';
 import { usMapViewBox, usNationPath, usStateBordersPath } from '../../utils/mapProjection';
@@ -37,6 +37,12 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
+function getMarkerSize(zoom: number) {
+  const maxSize = 34;
+  const minSize = 18;
+  const size = maxSize - (zoom - 1) * 8;
+  return clamp(size, minSize, maxSize);
+}
 
 export function USConferenceMap({
   viewKey,
@@ -55,6 +61,8 @@ export function USConferenceMap({
   const [viewportSize, setViewportSize] = useState({ width: usMapViewBox.width, height: usMapViewBox.height });
   const defaultZoom = defaultView?.zoom ?? 1;
   const [zoom, setZoom] = useState(defaultZoom);
+  const markerSize = getMarkerSize(zoom);
+  const markerTouchSize = Math.max(44, markerSize + 14);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
 
@@ -117,10 +125,20 @@ export function USConferenceMap({
     focusLocation(focusTarget);
   }, [focusTarget?.latitude, focusTarget?.longitude, focusTarget?.label, focusKey]);
 
+  const zoomTo = (nextZoom: number) => {
+    const clampedZoom = clamp(Number(nextZoom.toFixed(2)), 1, MAX_ZOOM);
+    setZoom(clampedZoom);
+    setPan((currentPan) => clampPan(clampedZoom, currentPan));
+  };
+
   const adjustZoom = (direction: 1 | -1) => {
-    const nextZoom = clamp(Number((zoom + direction * ZOOM_STEP).toFixed(2)), 1, MAX_ZOOM);
-    setZoom(nextZoom);
-    setPan((currentPan) => clampPan(nextZoom, currentPan));
+    zoomTo(zoom + direction * ZOOM_STEP);
+  };
+
+  const handleWheel = (event: ReactWheelEvent<HTMLDivElement>) => {
+    if (Math.abs(event.deltaY) < 2) return;
+    event.preventDefault();
+    zoomTo(zoom + (event.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP));
   };
 
   const startPan = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -156,18 +174,18 @@ export function USConferenceMap({
   };
 
   return (
-    <section key={viewKey ?? activeLayer} className="rounded-md border border-charcoal/10 bg-charcoal p-4 shadow-exhibit animate-[mapEraIn_0.38s_ease-out]">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+    <section key={viewKey ?? activeLayer} className="rounded-md border border-charcoal/10 bg-charcoal p-3 shadow-sm animate-[mapEraIn_0.38s_ease-out] sm:p-4">
+      <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-gold">United States conference atlas</p>
-          <h2 className="font-display text-3xl font-bold text-cream">{headerTitle}</h2>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-gold">Map view</p>
+          <h2 className="font-display text-2xl font-bold text-cream sm:text-3xl">{headerTitle}</h2>
         </div>
         <SharedLegend items={legendItems} />
       </div>
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-charcoal/10 bg-white/84 px-4 py-3 shadow-sm">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-md bg-white/88 px-3 py-2">
         <div>
           <p className="text-[11px] font-black uppercase tracking-[0.16em] text-charcoal/45">Current selection</p>
-          <p className="font-display text-2xl font-bold text-charcoal">{selectionTitle}</p>
+          <p className="font-display text-xl font-bold text-charcoal sm:text-2xl">{selectionTitle}</p>
         </div>
         <div className="text-right text-xs font-semibold text-charcoal/62">
           <p>{selectionSubtitle}</p>
@@ -178,12 +196,18 @@ export function USConferenceMap({
         ref={viewportRef}
         className={`relative aspect-[1.15] min-h-[320px] touch-none overflow-hidden rounded-md border border-white/10 bg-[#dbe4ea] sm:aspect-[1.35] md:aspect-[1.55] md:min-h-[500px] xl:min-h-[580px] ${zoom > defaultZoom ? (dragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'}`}
         onPointerDown={startPan}
+        onWheel={handleWheel}
       >
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.42),rgba(219,228,234,0.95))]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.08] map-line" />
         <div
           className="absolute inset-0 transition-transform duration-300 ease-out will-change-transform"
-          style={{ transformOrigin: '0 0', transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}
+          style={{
+            '--map-marker-size': `${markerSize / zoom}px`,
+            '--map-touch-size': `${markerTouchSize / zoom}px`,
+            transformOrigin: '0 0',
+            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+          } as CSSProperties}
         >
           <svg
             className="absolute inset-0 h-full w-full"
@@ -198,14 +222,8 @@ export function USConferenceMap({
           {children}
         </div>
         <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-white/45 to-transparent" />
-        <div className="pointer-events-none absolute left-4 top-4 hidden max-w-[20rem] rounded-md border border-charcoal/15 bg-white/82 px-3 py-2 text-xs font-bold leading-5 text-charcoal/75 shadow-lg backdrop-blur md:block">
+        <div className="pointer-events-none absolute bottom-3 left-3 hidden rounded-md bg-white/78 px-3 py-2 text-xs font-semibold text-charcoal/68 backdrop-blur md:block">
           {layerCopy[activeLayer]}
-        </div>
-        <div className="pointer-events-none absolute bottom-4 right-4 rounded-md border border-charcoal/10 bg-white/82 px-3 py-2 text-right text-xs font-bold text-charcoal/68 backdrop-blur">
-          {meta}
-        </div>
-        <div className="pointer-events-none absolute bottom-4 left-4 rounded-md border border-charcoal/10 bg-white/82 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-charcoal/58 shadow-sm">
-          Lower 48 campus locations
         </div>
         <SharedZoomControls
           onZoomIn={() => adjustZoom(1)}
@@ -218,15 +236,6 @@ export function USConferenceMap({
           focusLabel={focusTarget ? `Focus map on ${focusTarget.label}` : 'Focus map on current selection'}
           focusDisabled={!focusTarget}
         />
-      </div>
-      <div className="mt-3 rounded-md border border-charcoal/10 bg-white/84 p-3 shadow-sm">
-        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-brass">Map guidance</p>
-          <p className="text-xs font-semibold text-charcoal/55">{zoom > defaultZoom ? 'Drag the map to pan while zoomed.' : 'Use this when markers are close together.'}</p>
-        </div>
-        <p className="text-sm leading-6 text-charcoal/68">
-          Switch layers to compare conference geography, NFL destinations, rivalry routes, and recruiting regions without leaving the shared U.S. map.
-        </p>
       </div>
     </section>
   );

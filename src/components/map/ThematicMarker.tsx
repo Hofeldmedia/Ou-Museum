@@ -62,10 +62,11 @@ export function ThematicMarker({
         selected ? 'z-40 scale-110' : 'z-20 hover:z-30 hover:scale-105'
       } ${muted ? 'opacity-55' : 'opacity-100'}
       } ${markerClassName ?? ''}`}
-      style={{ left: `${x}%`, top: `${y}%`, ...markerStyle }}
+      style={{ left: `${x}%`, top: `${y}%`, minWidth: 'var(--map-touch-size, 4.25rem)', minHeight: 'var(--map-touch-size, 4.25rem)', ...markerStyle }}
     >
       <span className="absolute inset-0 rounded-full bg-transparent" aria-hidden="true" />
       <span
+        style={{ width: 'var(--map-marker-size, 2.5rem)', height: 'var(--map-marker-size, 2.5rem)' }}
         className={`relative flex h-8 w-8 items-center justify-center rounded-full border-2 text-[11px] font-black uppercase transition sm:h-9 sm:w-9 md:h-10 md:w-10 ${
           toneClasses[tone]
         } ${
