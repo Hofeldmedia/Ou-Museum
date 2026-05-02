@@ -68,7 +68,7 @@ export const fbsSchoolRegistry: FbsSchool[] = [
   { id: 'rutgers', name: 'Rutgers', shortName: 'Rutgers', conferenceId: 'big-ten', city: 'Piscataway', state: 'New Jersey', latitude: 40.5137, longitude: -74.4653, stadiumName: 'SHI Stadium', espnId: '164' },
   { id: 'ucla', name: 'UCLA', shortName: 'UCLA', conferenceId: 'big-ten', city: 'Pasadena', state: 'California', latitude: 34.1613, longitude: -118.1676, stadiumName: 'Rose Bowl', espnId: '26' },
   { id: 'usc', name: 'USC', shortName: 'USC', conferenceId: 'big-ten', city: 'Los Angeles', state: 'California', latitude: 34.0141, longitude: -118.2879, stadiumName: 'Los Angeles Memorial Coliseum', espnId: '30' },
-  { id: 'washington', name: 'Washington', shortName: 'UW', conferenceId: 'big-ten', city: 'Seattle', state: 'Washington', latitude: 47.6502, longitude: -122.3016, stadiumName: 'Husky Stadium', espnId: '2686' },
+  { id: 'washington', name: 'Washington', shortName: 'UW', conferenceId: 'big-ten', city: 'Seattle', state: 'Washington', latitude: 47.6502, longitude: -122.3016, stadiumName: 'Husky Stadium', espnId: '264' },
   { id: 'wisconsin', name: 'Wisconsin', shortName: 'Wisconsin', conferenceId: 'big-ten', city: 'Madison', state: 'Wisconsin', latitude: 43.0697, longitude: -89.4125, stadiumName: 'Camp Randall Stadium', espnId: '275' },
 
   { id: 'delaware', name: 'Delaware', shortName: 'Delaware', conferenceId: 'cusa', city: 'Newark', state: 'Delaware', latitude: 39.6837, longitude: -75.7497, stadiumName: 'Delaware Stadium', espnId: '48' },
@@ -95,7 +95,7 @@ export const fbsSchoolRegistry: FbsSchool[] = [
   { id: 'miami-oh', name: 'Miami (OH)', shortName: 'Miami OH', conferenceId: 'mac', city: 'Oxford', state: 'Ohio', latitude: 39.5105, longitude: -84.7363, stadiumName: 'Yager Stadium', espnId: '193' },
   { id: 'ohio', name: 'Ohio', shortName: 'Ohio', conferenceId: 'mac', city: 'Athens', state: 'Ohio', latitude: 39.321, longitude: -82.1028, stadiumName: 'Peden Stadium', espnId: '195' },
   { id: 'toledo', name: 'Toledo', shortName: 'Toledo', conferenceId: 'mac', city: 'Toledo', state: 'Ohio', latitude: 41.6578, longitude: -83.613, stadiumName: 'Glass Bowl', espnId: '2649' },
-  { id: 'umass', name: 'UMass', shortName: 'UMass', conferenceId: 'mac', city: 'Amherst', state: 'Massachusetts', latitude: 42.3868, longitude: -72.5301, stadiumName: 'Warren McGuirk Alumni Stadium', espnId: '379' },
+  { id: 'umass', name: 'UMass', shortName: 'UMass', conferenceId: 'mac', city: 'Amherst', state: 'Massachusetts', latitude: 42.3868, longitude: -72.5301, stadiumName: 'Warren McGuirk Alumni Stadium', espnId: '113' },
   { id: 'western-michigan', name: 'Western Michigan', shortName: 'WMU', conferenceId: 'mac', city: 'Kalamazoo', state: 'Michigan', latitude: 42.2837, longitude: -85.6103, stadiumName: 'Waldo Stadium', espnId: '2711' },
 
   { id: 'air-force', name: 'Air Force', shortName: 'Air Force', conferenceId: 'mountain-west', city: 'Colorado Springs', state: 'Colorado', latitude: 38.9969, longitude: -104.8437, stadiumName: 'Falcon Stadium', espnId: '2005' },
@@ -141,7 +141,7 @@ export const fbsSchoolRegistry: FbsSchool[] = [
   { id: 'georgia-southern', name: 'Georgia Southern', shortName: 'Ga Southern', conferenceId: 'sun-belt', city: 'Statesboro', state: 'Georgia', latitude: 32.4279, longitude: -81.7832, stadiumName: 'Allen E. Paulson Stadium', espnId: '290' },
   { id: 'georgia-state', name: 'Georgia State', shortName: 'Ga State', conferenceId: 'sun-belt', city: 'Atlanta', state: 'Georgia', latitude: 33.7351, longitude: -84.3895, stadiumName: 'Center Parc Stadium', espnId: '2247' },
   { id: 'james-madison', name: 'James Madison', shortName: 'JMU', conferenceId: 'sun-belt', city: 'Harrisonburg', state: 'Virginia', latitude: 38.4351, longitude: -78.8698, stadiumName: 'Bridgeforth Stadium', espnId: '256' },
-  { id: 'louisiana', name: 'Louisiana', shortName: 'Louisiana', conferenceId: 'sun-belt', city: 'Lafayette', state: 'Louisiana', latitude: 30.215, longitude: -92.0198, stadiumName: 'Cajun Field', espnId: '2347' },
+  { id: 'louisiana', name: 'Louisiana', shortName: 'Louisiana', conferenceId: 'sun-belt', city: 'Lafayette', state: 'Louisiana', latitude: 30.215, longitude: -92.0198, stadiumName: 'Cajun Field', espnId: '309' },
   { id: 'louisiana-monroe', name: 'Louisiana Monroe', shortName: 'ULM', conferenceId: 'sun-belt', city: 'Monroe', state: 'Louisiana', latitude: 32.5308, longitude: -92.0668, stadiumName: 'Malone Stadium', espnId: '2433' },
   { id: 'louisiana-tech', name: 'Louisiana Tech', shortName: 'LA Tech', conferenceId: 'sun-belt', city: 'Ruston', state: 'Louisiana', latitude: 32.5304, longitude: -92.647, stadiumName: 'Joe Aillet Stadium', notes: 'Projected Sun Belt member beginning in 2026.', espnId: '2348' },
   { id: 'marshall', name: 'Marshall', shortName: 'Marshall', conferenceId: 'sun-belt', city: 'Huntington', state: 'West Virginia', latitude: 38.4251, longitude: -82.4215, stadiumName: 'Joan C. Edwards Stadium', espnId: '276' },

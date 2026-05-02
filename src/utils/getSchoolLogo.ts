@@ -59,13 +59,13 @@ function toLegacyStatus(accuracy: LogoAccuracy): ResolvedLogoAsset['status'] {
 
 function getGeneratedSchoolLogo(schoolId: string, schoolName: string, espnId?: string | number | null) {
   const normalizedId = normalizeSchoolName(schoolId);
+  const normalizedName = normalizeSchoolName(schoolName);
+  const overrideEspnId = schoolLogoEspnIdOverrides[normalizedId] ?? schoolLogoEspnIdOverrides[normalizedName];
+  if (overrideEspnId && generatedSchoolLogos[overrideEspnId]) return generatedSchoolLogos[overrideEspnId];
+
   const espnKey = espnId == null ? null : String(espnId).trim();
   if (espnKey && generatedSchoolLogos[espnKey]) return generatedSchoolLogos[espnKey];
 
-  const overrideEspnId = schoolLogoEspnIdOverrides[normalizedId];
-  if (overrideEspnId && generatedSchoolLogos[overrideEspnId]) return generatedSchoolLogos[overrideEspnId];
-
-  const normalizedName = normalizeSchoolName(schoolName);
   const exactFullDisplaySlug = exactFullDisplaySlugBySchoolId[normalizedId];
 
   return (
@@ -107,6 +107,13 @@ const schoolLogoEspnIdOverrides: Record<string, string> = {
   'ohio state': '194',
   minnesota: '135',
   'ferris state': '2222',
+  umass: '113',
+  massachusetts: '113',
+  'massachusetts minutemen': '113',
+  louisiana: '309',
+  'louisiana ragin cajuns': '309',
+  washington: '264',
+  'washington huskies': '264',
 };
 
 const exactFullDisplaySlugBySchoolId: Record<string, string> = {

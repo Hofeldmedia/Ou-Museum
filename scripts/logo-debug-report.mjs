@@ -91,6 +91,13 @@ const schoolLogoEspnIdOverrides = {
   'ohio state': '194',
   minnesota: '135',
   'ferris state': '2222',
+  umass: '113',
+  massachusetts: '113',
+  'massachusetts minutemen': '113',
+  louisiana: '309',
+  'louisiana ragin cajuns': '309',
+  washington: '264',
+  'washington huskies': '264',
 };
 
 const generatedNormalizedNames = new Map();
@@ -101,11 +108,11 @@ for (const [name, logo] of generatedByName) {
 
 function deterministicLogoSource(school) {
   const normalizedId = normalizeName(school.id);
-  const overrideId = schoolLogoEspnIdOverrides[normalizedId];
+  const normalizedName = normalizeName(school.name);
+  const overrideId = schoolLogoEspnIdOverrides[normalizedId] ?? schoolLogoEspnIdOverrides[normalizedName];
   const espnId = overrideId ?? school.espnId;
   if (espnId && generatedById.has(String(espnId))) return { source: overrideId ? 'override-espn-id' : 'espn-id', value: String(espnId) };
 
-  const normalizedName = normalizeName(school.name);
   if (generatedNormalizedNames.has(normalizedName)) return { source: 'exact-normalized-name', value: normalizedName };
 
   const nameSlug = toSlug(school.name);
