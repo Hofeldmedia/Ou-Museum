@@ -77,6 +77,10 @@ export function HeroLanding({
   onBeginTour,
   onExploreFreely,
   onStartExploring,
+  onOpenTimeline,
+  onOpenNfl,
+  onOpenConferenceGallery,
+  onOpenChampionships,
   onToggleAudio,
 }: {
   museumMode: MuseumMode;
@@ -84,6 +88,10 @@ export function HeroLanding({
   onBeginTour: () => void;
   onExploreFreely: () => void;
   onStartExploring: () => void;
+  onOpenTimeline: () => void;
+  onOpenNfl: () => void;
+  onOpenConferenceGallery: () => void;
+  onOpenChampionships: () => void;
   onToggleAudio: () => void;
 }) {
   return (
@@ -109,7 +117,7 @@ export function HeroLanding({
               Maps, rivalries, titles, and the road ahead.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <PrimaryButton className="w-full sm:w-auto" onClick={onStartExploring} aria-label="Start exploring the main conference map">Start Exploring</PrimaryButton>
+              <PrimaryButton className="w-full sm:w-auto" onClick={onStartExploring} aria-label="Start with the 2026 map">Start with 2026 Map</PrimaryButton>
               <PrimaryButton className="w-full sm:w-auto" variant="secondary" onClick={onBeginTour}>Guided Intro</PrimaryButton>
               <PrimaryButton className="w-full border border-white/15 text-cream hover:bg-white/10 hover:text-white sm:w-auto" variant="ghost" onClick={onExploreFreely}>Museum Hub</PrimaryButton>
               <button
@@ -123,6 +131,23 @@ export function HeroLanding({
                 {audioEnabled ? 'Audio On' : 'Audio Off'}
               </button>
             </div>
+            <nav className="mt-6 flex flex-wrap gap-2" aria-label="Featured museum sections">
+              {[
+                ['Timeline View', onOpenTimeline],
+                ['From Norman to the NFL', onOpenNfl],
+                ['Conference Gallery', onOpenConferenceGallery],
+                ['National Championships', onOpenChampionships],
+              ].map(([label, handler]) => (
+                <button
+                  key={label as string}
+                  type="button"
+                  onClick={handler as () => void}
+                  className="min-h-11 rounded-md border border-white/14 bg-white/8 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-cream/78 transition hover:border-gold/45 hover:bg-white/14 hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-gold/20"
+                >
+                  {label as string}
+                </button>
+              ))}
+            </nav>
             <p className="mt-5 text-xs font-black uppercase tracking-[0.2em] text-cream/50">
               A digital interactive experience | {museumMode === 'guided' ? 'Guided Tour selected' : 'Free Explore selected'}
             </p>

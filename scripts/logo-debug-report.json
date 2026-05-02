@@ -1,0 +1,579 @@
+{
+  "generatedAt": "2026-05-02T03:49:06.082Z",
+  "summary": {
+    "appSchoolsChecked": 170,
+    "missingEspnId": 0,
+    "placeholderFallback": 0,
+    "duplicateNormalizedNames": 33,
+    "logoMapCollisions": 0
+  },
+  "missingEspnId": [],
+  "placeholderFallback": [],
+  "duplicateNormalizedNames": [
+    {
+      "key": "arizona",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "arizona",
+          "name": "Arizona",
+          "espnId": "12"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "arizona",
+          "name": "Arizona",
+          "espnId": "12"
+        }
+      ]
+    },
+    {
+      "key": "arizona state",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "arizona-state",
+          "name": "Arizona State",
+          "espnId": "9"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "arizona-state",
+          "name": "Arizona State",
+          "espnId": "9"
+        }
+      ]
+    },
+    {
+      "key": "baylor",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "baylor",
+          "name": "Baylor",
+          "espnId": "239"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "baylor",
+          "name": "Baylor",
+          "espnId": "239"
+        }
+      ]
+    },
+    {
+      "key": "byu",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "byu",
+          "name": "BYU",
+          "espnId": "252"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "byu",
+          "name": "BYU",
+          "espnId": "252"
+        }
+      ]
+    },
+    {
+      "key": "cincinnati",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "cincinnati",
+          "name": "Cincinnati",
+          "espnId": "2132"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "cincinnati",
+          "name": "Cincinnati",
+          "espnId": "2132"
+        }
+      ]
+    },
+    {
+      "key": "colorado",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "colorado",
+          "name": "Colorado",
+          "espnId": "38"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "colorado",
+          "name": "Colorado",
+          "espnId": "38"
+        }
+      ]
+    },
+    {
+      "key": "houston",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "houston",
+          "name": "Houston",
+          "espnId": "248"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "houston",
+          "name": "Houston",
+          "espnId": "248"
+        }
+      ]
+    },
+    {
+      "key": "iowa state",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "iowa-state",
+          "name": "Iowa State",
+          "espnId": "66"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "iowa-state",
+          "name": "Iowa State",
+          "espnId": "66"
+        }
+      ]
+    },
+    {
+      "key": "kansas",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "kansas",
+          "name": "Kansas",
+          "espnId": "2305"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "kansas",
+          "name": "Kansas",
+          "espnId": "2305"
+        }
+      ]
+    },
+    {
+      "key": "kansas state",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "kansas-state",
+          "name": "Kansas State",
+          "espnId": "2306"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "kansas-state",
+          "name": "Kansas State",
+          "espnId": "2306"
+        }
+      ]
+    },
+    {
+      "key": "oklahoma state",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "oklahoma-state",
+          "name": "Oklahoma State",
+          "espnId": "197"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "oklahoma-state",
+          "name": "Oklahoma State",
+          "espnId": "197"
+        }
+      ]
+    },
+    {
+      "key": "tcu",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "tcu",
+          "name": "TCU",
+          "espnId": "2628"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "tcu",
+          "name": "TCU",
+          "espnId": "2628"
+        }
+      ]
+    },
+    {
+      "key": "texas tech",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "texas-tech",
+          "name": "Texas Tech",
+          "espnId": "2641"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "texas-tech",
+          "name": "Texas Tech",
+          "espnId": "2641"
+        }
+      ]
+    },
+    {
+      "key": "ucf",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "ucf",
+          "name": "UCF",
+          "espnId": "2116"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "ucf",
+          "name": "UCF",
+          "espnId": "2116"
+        }
+      ]
+    },
+    {
+      "key": "utah",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "utah",
+          "name": "Utah",
+          "espnId": "254"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "utah",
+          "name": "Utah",
+          "espnId": "254"
+        }
+      ]
+    },
+    {
+      "key": "west virginia",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "west-virginia",
+          "name": "West Virginia",
+          "espnId": "277"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "west-virginia",
+          "name": "West Virginia",
+          "espnId": "277"
+        }
+      ]
+    },
+    {
+      "key": "nebraska",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "nebraska",
+          "name": "Nebraska",
+          "espnId": "158"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "nebraska",
+          "name": "Nebraska",
+          "espnId": "158"
+        }
+      ]
+    },
+    {
+      "key": "alabama",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "alabama",
+          "name": "Alabama",
+          "espnId": "333"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "alabama",
+          "name": "Alabama",
+          "espnId": "333"
+        }
+      ]
+    },
+    {
+      "key": "arkansas",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "arkansas",
+          "name": "Arkansas",
+          "espnId": "8"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "arkansas",
+          "name": "Arkansas",
+          "espnId": "8"
+        }
+      ]
+    },
+    {
+      "key": "auburn",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "auburn",
+          "name": "Auburn",
+          "espnId": "2"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "auburn",
+          "name": "Auburn",
+          "espnId": "2"
+        }
+      ]
+    },
+    {
+      "key": "florida",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "florida",
+          "name": "Florida",
+          "espnId": "57"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "florida",
+          "name": "Florida",
+          "espnId": "57"
+        }
+      ]
+    },
+    {
+      "key": "georgia",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "georgia",
+          "name": "Georgia",
+          "espnId": "61"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "georgia",
+          "name": "Georgia",
+          "espnId": "61"
+        }
+      ]
+    },
+    {
+      "key": "kentucky",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "kentucky",
+          "name": "Kentucky",
+          "espnId": "96"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "kentucky",
+          "name": "Kentucky",
+          "espnId": "96"
+        }
+      ]
+    },
+    {
+      "key": "lsu",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "lsu",
+          "name": "LSU",
+          "espnId": "99"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "lsu",
+          "name": "LSU",
+          "espnId": "99"
+        }
+      ]
+    },
+    {
+      "key": "mississippi state",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "mississippi-state",
+          "name": "Mississippi State",
+          "espnId": "344"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "mississippi-state",
+          "name": "Mississippi State",
+          "espnId": "344"
+        }
+      ]
+    },
+    {
+      "key": "ole miss",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "ole-miss",
+          "name": "Ole Miss",
+          "espnId": "145"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "ole-miss",
+          "name": "Ole Miss",
+          "espnId": "145"
+        }
+      ]
+    },
+    {
+      "key": "missouri",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "missouri",
+          "name": "Missouri",
+          "espnId": "142"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "missouri",
+          "name": "Missouri",
+          "espnId": "142"
+        }
+      ]
+    },
+    {
+      "key": "oklahoma",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "oklahoma",
+          "name": "Oklahoma",
+          "espnId": "201"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "oklahoma",
+          "name": "Oklahoma",
+          "espnId": "201"
+        }
+      ]
+    },
+    {
+      "key": "south carolina",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "south-carolina",
+          "name": "South Carolina",
+          "espnId": "2579"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "south-carolina",
+          "name": "South Carolina",
+          "espnId": "2579"
+        }
+      ]
+    },
+    {
+      "key": "tennessee",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "tennessee",
+          "name": "Tennessee",
+          "espnId": "2633"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "tennessee",
+          "name": "Tennessee",
+          "espnId": "2633"
+        }
+      ]
+    },
+    {
+      "key": "texas",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "texas",
+          "name": "Texas",
+          "espnId": "251"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "texas",
+          "name": "Texas",
+          "espnId": "251"
+        }
+      ]
+    },
+    {
+      "key": "texas a and m",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "texas-am",
+          "name": "Texas A&M",
+          "espnId": "245"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "texas-am",
+          "name": "Texas A&M",
+          "espnId": "245"
+        }
+      ]
+    },
+    {
+      "key": "vanderbilt",
+      "values": [
+        {
+          "sourceFile": "src/data/fbsSchoolRegistry.ts",
+          "id": "vanderbilt",
+          "name": "Vanderbilt",
+          "espnId": "238"
+        },
+        {
+          "sourceFile": "src/data/schoolRegistry.ts",
+          "id": "vanderbilt",
+          "name": "Vanderbilt",
+          "espnId": "238"
+        }
+      ]
+    }
+  ],
+  "logoMapCollisions": {
+    "generatedNameCollisions": [],
+    "generatedSlugCollisions": []
+  }
+}

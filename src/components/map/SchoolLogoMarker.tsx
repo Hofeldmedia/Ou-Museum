@@ -37,7 +37,7 @@ export function SchoolLogoMarker({ school, eraName, selected, explored, newlyAdd
     >
       <span className="absolute inset-0 rounded-full bg-transparent" aria-hidden="true" />
       <span
-        className={`relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border bg-cream shadow-lg transition sm:h-10 sm:w-10 md:h-11 md:w-11 ${
+        className={`relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border bg-[#edf1f4] shadow-lg transition sm:h-10 sm:w-10 md:h-11 md:w-11 ${
           selected
             ? 'scale-110 border-[3px] border-gold shadow-[0_0_34px_rgba(132,22,23,0.55)] ring-4 ring-crimson/35'
             : newlyAdded
@@ -50,19 +50,21 @@ export function SchoolLogoMarker({ school, eraName, selected, explored, newlyAdd
         }`}
       >
         {showImage ? (
-          <img
-            src={logoSrc}
-            alt={school.logo.alt}
-            className="h-full w-full bg-white object-contain p-0.5"
-            onError={() => {
-              if (!useFallback && school.logo.dark) {
-                setUseFallback(true);
-                return;
-              }
-              setFallbackFailed(true);
-            }}
-            loading="lazy"
-          />
+          <span className="relative z-10 flex h-[78%] w-[78%] items-center justify-center rounded-full bg-charcoal/10 p-[2px]">
+            <img
+              src={logoSrc}
+              alt={school.logo.alt}
+              className="h-full w-full object-contain drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"
+              onError={() => {
+                if (!useFallback && school.logo.dark) {
+                  setUseFallback(true);
+                  return;
+                }
+                setFallbackFailed(true);
+              }}
+              loading="lazy"
+            />
+          </span>
         ) : (
           <span className={`flex h-full w-full items-center justify-center px-1 text-center text-[10px] font-black leading-none ${school.isOU ? 'bg-crimson text-white' : 'bg-charcoal text-gold'}`}>
             {school.shortName}

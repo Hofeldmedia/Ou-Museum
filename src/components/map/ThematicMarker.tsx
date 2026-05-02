@@ -67,7 +67,7 @@ export function ThematicMarker({
       <span className="absolute inset-0 rounded-full bg-transparent" aria-hidden="true" />
       <span
         style={{ width: 'var(--map-marker-size, 2.5rem)', height: 'var(--map-marker-size, 2.5rem)' }}
-        className={`relative flex h-8 w-8 items-center justify-center rounded-full border-2 text-[11px] font-black uppercase transition sm:h-9 sm:w-9 md:h-10 md:w-10 ${
+        className={`relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border-2 text-[11px] font-black uppercase transition sm:h-9 sm:w-9 md:h-10 md:w-10 ${
           toneClasses[tone]
         } ${
           selected
@@ -80,15 +80,20 @@ export function ThematicMarker({
         } ${muted && !selected ? 'saturate-[0.85]' : ''} ${badgeClassName ?? ''}`}
       >
         {imageUrl && !imageFailed ? (
-          <img
-            src={imageUrl}
-            alt={imageAlt ?? `${label} logo`}
-            loading="lazy"
-            onError={() => setImageFailed(true)}
-            className={`h-[70%] w-[70%] object-contain ${imageClassName ?? ''}`}
-          />
+          <span
+            className="relative z-10 flex items-center justify-center rounded-full bg-charcoal/10 p-[2px]"
+            style={{ width: 'var(--map-logo-size, 70%)', height: 'var(--map-logo-size, 70%)' }}
+          >
+            <img
+              src={imageUrl}
+              alt={imageAlt ?? `${label} logo`}
+              loading="lazy"
+              onError={() => setImageFailed(true)}
+              className={`h-full w-full object-contain drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)] ${imageClassName ?? ''}`}
+            />
+          </span>
         ) : (
-          fallbackText ?? badge ?? label.slice(0, 2)
+          <span className="relative z-10">{fallbackText ?? badge ?? label.slice(0, 2)}</span>
         )}
       </span>
       <span

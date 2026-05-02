@@ -1,6 +1,8 @@
 import { Award, CheckCircle2, Filter, Landmark, MapPinned, Search, Shield, Trophy, Users } from 'lucide-react';
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { ConferenceExplorerScreen } from './components/ConferenceExplorerScreen';
+import { NFLLayer } from './components/map/NFLLayer';
+import { USConferenceMap } from './components/map/USConferenceMap';
 import { AudioAura } from './components/experience/AudioAura';
 import { TourNarrative } from './components/experience/TourNarrative';
 import { Layout } from './components/Layout';
@@ -21,13 +23,15 @@ import { matchPairs, timelineEvents } from './data/historyData';
 import { rivalries, signatureMoments, tourChapters } from './data/immersive';
 import { nflSooners } from './data/nflSooners';
 import { profileImages } from './data/profileImages';
-import { nflTeamRegistry } from './data/nflMapData';
+import { normanAnchor } from './data/heismanMapData';
+import { nflDestinationMarkers, nflRouteLines, nflTeamRegistry } from './data/nflMapData';
 import type { ExploredSchools, Screen } from './types';
 import type { ChampionshipSeason, CoachProfile, FeaturedPerson, HeismanWinner, MuseumArtifact, MuseumMode, NFLSooner, NFLStatus, RelatedLink, RivalryProfile } from './types/content';
 import type { QuizId, QuizProgressState } from './types/quiz';
 import { isConferenceExplorationComplete } from './utils/exploration';
 import { relatedLinkToRoute } from './utils/navigation';
 import { setPageTitle } from './utils/setPageTitle';
+import { trackEvent } from './utils/trackEvent';
 import { getQuizProgress, isQuizUnlocked, resetQuizProgress } from './utils/quizProgress';
 
 
@@ -322,6 +326,15 @@ function App() {
     if (destination === 'quizzes') {
       setQuizProgress(getQuizProgress());
     }
+    if (destination === 'map' || destination === 'fbs-landscape' || destination === 'nfl') {
+      trackEvent('view_map', { map: destination });
+    }
+    if (destination === 'nfl') {
+      trackEvent('open_norman_to_nfl', { source: nextScreen });
+    }
+    if (destination === 'timeline') {
+      trackEvent('open_timeline', { source: nextScreen });
+    }
     setScreen(destination);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -412,7 +425,25 @@ function App() {
             onExploreFreely={exploreFreely}
             onStartExploring={() => {
               setMuseumMode('free');
+              moveTo('fbs-landscape');
+            }}
+            onOpenTimeline={() => {
+              setMuseumMode('free');
+              window.sessionStorage.setItem('preferredFbsView', 'timeline');
+              trackEvent('open_timeline', { source: 'landing' });
+              moveTo('fbs-landscape');
+            }}
+            onOpenNfl={() => {
+              setMuseumMode('free');
+              moveTo('nfl');
+            }}
+            onOpenConferenceGallery={() => {
+              setMuseumMode('free');
               moveTo('map');
+            }}
+            onOpenChampionships={() => {
+              setMuseumMode('free');
+              moveTo('championships');
             }}
           />
         )}
@@ -579,6 +610,10 @@ function HomeScreen({
   onStart,
   onExploreFreely,
   onStartExploring,
+  onOpenTimeline,
+  onOpenNfl,
+  onOpenConferenceGallery,
+  onOpenChampionships,
 }: {
   museumMode: MuseumMode;
   onModeChange: (mode: MuseumMode) => void;
@@ -587,6 +622,10 @@ function HomeScreen({
   onStart: () => void;
   onExploreFreely: () => void;
   onStartExploring: () => void;
+  onOpenTimeline: () => void;
+  onOpenNfl: () => void;
+  onOpenConferenceGallery: () => void;
+  onOpenChampionships: () => void;
 }) {
   return (
     <HeroLanding
@@ -601,6 +640,10 @@ function HomeScreen({
         onExploreFreely();
       }}
       onStartExploring={onStartExploring}
+      onOpenTimeline={onOpenTimeline}
+      onOpenNfl={onOpenNfl}
+      onOpenConferenceGallery={onOpenConferenceGallery}
+      onOpenChampionships={onOpenChampionships}
       onToggleAudio={onToggleAudio}
     />
   );
@@ -873,12 +916,55 @@ function NflScreen(props: {
   onNavigate: (screen: Screen, targetId?: string) => void;
 }) {
   const active = nflSooners.filter((player) => player.active).slice(0, 5);
+  const [selectedMapTeam, setSelectedMapTeam] = useState(props.selected.currentTeam);
+  const selectedOrigin = selectedMapTeam === normanAnchor.label;
+  const selectedMapTeamInfo = selectedOrigin ? null : nflTeamRegistry[selectedMapTeam] ?? nflTeamRegistry[props.selected.currentTeam];
+  const selectedMapRoutes = selectedOrigin ? [] : nflRouteLines.filter((route) => route.toId.endsWith(selectedMapTeam.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-')));
+  const nflMapLegend = [
+    { id: 'norman', label: 'Norman origin', tone: 'anchor' as const },
+    { id: 'nfl-teams', label: 'NFL teams', tone: 'nfl' as const },
+    { id: 'routes', label: 'OU player paths', tone: 'route' as const },
+  ];
+
+  useEffect(() => {
+    setSelectedMapTeam(props.selected.currentTeam);
+  }, [props.selected.currentTeam]);
+
+  const selectMapTeam = (teamName: string) => {
+    setSelectedMapTeam(teamName);
+    const playerForTeam = nflSooners.find((player) => player.currentTeam === teamName) ?? nflSooners.find((player) => player.nflTeams.includes(teamName));
+    if (playerForTeam) props.onSelect(playerForTeam.id);
+  };
 
   return (
     <section>
       <SectionHero eyebrow="Pro Pipeline" title="Sooners in the NFL" meta={`${props.players.length} players shown`}>
         Search and filter a scalable starter database of OU alumni in the NFL. Roster statuses are representative and should be reviewed periodically.
       </SectionHero>
+      <section className="mb-5">
+        <USConferenceMap
+          viewKey="norman-to-nfl"
+          activeLayer="nfl"
+          legendItems={nflMapLegend}
+          headerTitle="From Norman to the NFL"
+          selectionTitle={selectedOrigin ? 'Norman, Oklahoma' : selectedMapTeam}
+          selectionSubtitle={selectedMapTeamInfo ? `${selectedMapTeamInfo.city}, ${selectedMapTeamInfo.state}` : 'OU origin'}
+          meta={`${selectedMapRoutes.length || nflRouteLines.length} OU player path${(selectedMapRoutes.length || nflRouteLines.length) === 1 ? '' : 's'}`}
+          focusTarget={selectedMapTeamInfo ? { label: selectedMapTeam, latitude: selectedMapTeamInfo.latitude, longitude: selectedMapTeamInfo.longitude } : normanAnchor}
+          focusKey={selectedMapTeam}
+          defaultView={{ zoom: 1 }}
+        >
+          <NFLLayer
+            norman={normanAnchor}
+            destinations={nflDestinationMarkers}
+            routes={nflRouteLines}
+            selectedTeamName={selectedOrigin ? undefined : selectedMapTeam}
+            selectedOrigin={selectedOrigin}
+            onSelectTeam={selectMapTeam}
+            onSelectOrigin={() => setSelectedMapTeam(normanAnchor.label)}
+          />
+        </USConferenceMap>
+      </section>
       <section className="mb-5 grid gap-4 lg:grid-cols-[0.82fr_1.18fr]">
         <div className="rounded-md border border-charcoal/10 bg-charcoal p-5 text-cream shadow-exhibit">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-gold">Active Sooners Snapshot</p>

@@ -37,11 +37,16 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function getMarkerSize(zoom: number) {
-  const maxSize = 34;
-  const minSize = 18;
-  const size = maxSize - (zoom - 1) * 8;
-  return clamp(size, minSize, maxSize);
+function getMarkerSizes(zoom: number) {
+  const outerMax = 42;
+  const outerMin = 26;
+  const logoMax = 30;
+  const logoMin = 20;
+
+  return {
+    outer: clamp(outerMax - (zoom - 1) * 6, outerMin, outerMax),
+    logo: clamp(logoMax - (zoom - 1) * 2, logoMin, logoMax),
+  };
 }
 
 export function USConferenceMap({
@@ -61,8 +66,8 @@ export function USConferenceMap({
   const [viewportSize, setViewportSize] = useState({ width: usMapViewBox.width, height: usMapViewBox.height });
   const defaultZoom = defaultView?.zoom ?? 1;
   const [zoom, setZoom] = useState(defaultZoom);
-  const markerSize = getMarkerSize(zoom);
-  const markerTouchSize = Math.max(44, markerSize + 14);
+  const markerSizes = getMarkerSizes(zoom);
+  const markerTouchSize = Math.max(44, markerSizes.outer + 12);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
 
@@ -203,7 +208,8 @@ export function USConferenceMap({
         <div
           className="absolute inset-0 transition-transform duration-300 ease-out will-change-transform"
           style={{
-            '--map-marker-size': `${markerSize / zoom}px`,
+            '--map-marker-size': `${markerSizes.outer / zoom}px`,
+            '--map-logo-size': `${markerSizes.logo / zoom}px`,
             '--map-touch-size': `${markerTouchSize / zoom}px`,
             transformOrigin: '0 0',
             transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,

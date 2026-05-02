@@ -1,4 +1,4 @@
-import { generatedSchoolLogos, generatedSchoolLogosByAbbreviation, generatedSchoolLogosBySlug } from '../data/generatedSchoolLogos';
+import { generatedSchoolLogos, generatedSchoolLogosByName, generatedSchoolLogosBySlug } from '../data/generatedSchoolLogos';
 import { findLogoManifestEntry } from '../data/logoManifest';
 import type { EraId, LogoAccuracy, ResolvedLogoAsset } from '../types/content';
 
@@ -58,46 +58,65 @@ function toLegacyStatus(accuracy: LogoAccuracy): ResolvedLogoAsset['status'] {
 
 
 function getGeneratedSchoolLogo(schoolId: string, schoolName: string, espnId?: string | number | null) {
-  const espnKey = espnId == null ? null : String(espnId);
+  const normalizedId = normalizeSchoolName(schoolId);
+  const espnKey = espnId == null ? null : String(espnId).trim();
   if (espnKey && generatedSchoolLogos[espnKey]) return generatedSchoolLogos[espnKey];
 
-  const normalizedId = normalizeLogoKey(schoolId);
-  const normalizedName = normalizeLogoKey(schoolName);
+  const overrideEspnId = schoolLogoEspnIdOverrides[normalizedId];
+  if (overrideEspnId && generatedSchoolLogos[overrideEspnId]) return generatedSchoolLogos[overrideEspnId];
 
-  const alias = generatedSchoolLogoAliases[normalizedId];
+  const normalizedName = normalizeSchoolName(schoolName);
+  const exactFullDisplaySlug = exactFullDisplaySlugBySchoolId[normalizedId];
 
   return (
-    generatedSchoolLogosBySlug[normalizedId] ??
-    generatedSchoolLogos[schoolName] ??
-    generatedSchoolLogosBySlug[normalizedName] ??
-    generatedSchoolLogosByAbbreviation[schoolId.toLowerCase()] ??
-    (alias ? generatedSchoolLogos[alias] ?? generatedSchoolLogosBySlug[alias] ?? generatedSchoolLogosByAbbreviation[alias] : null) ??
-    findGeneratedSchoolLogoByNamePrefix(normalizedName) ??
+    generatedSchoolLogosByNormalizedName[normalizedName] ??
+    generatedSchoolLogosBySlug[toSlug(schoolName)] ??
+    generatedSchoolLogosBySlug[toSlug(schoolId)] ??
+    (exactFullDisplaySlug ? generatedSchoolLogosBySlug[exactFullDisplaySlug] : null) ??
     null
   );
 }
 
-function findGeneratedSchoolLogoByNamePrefix(normalizedName: string) {
-  if (!normalizedName) return null;
-  const match = Object.entries(generatedSchoolLogosBySlug).find(([slug]) => slug.startsWith(`${normalizedName}-`));
-  return match?.[1] ?? null;
+function buildNormalizedLogoMap(entries: Record<string, string>) {
+  return Object.entries(entries).reduce<Record<string, string>>((acc, [name, logo]) => {
+    const normalizedName = normalizeSchoolName(name);
+    if (normalizedName && !acc[normalizedName]) acc[normalizedName] = logo;
+    return acc;
+  }, {});
 }
 
-function normalizeLogoKey(value: string) {
+function normalizeSchoolName(value: string) {
   return value
     .toLowerCase()
+    .trim()
     .replace(/&/g, ' and ')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/[.'’]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
 }
 
-const generatedSchoolLogoAliases: Record<string, string> = {
-  'appalachian-state': 'app-state-mountaineers',
-  fiu: 'fiu',
+function toSlug(value: string) {
+  return normalizeSchoolName(value).replace(/\s+/g, '-');
+}
+
+const generatedSchoolLogosByNormalizedName = buildNormalizedLogoMap(generatedSchoolLogosByName);
+
+const schoolLogoEspnIdOverrides: Record<string, string> = {
+  'oregon state': '204',
+  'ohio state': '194',
+  minnesota: '135',
+  'ferris state': '2222',
+};
+
+const exactFullDisplaySlugBySchoolId: Record<string, string> = {
+  'appalachian state': 'app-state-mountaineers',
+  fiu: 'florida-international-panthers',
   hawaii: 'hawaii-rainbow-warriors',
-  'louisiana-monroe': 'ulm',
-  'san-jose-state': 'san-jose-state-spartans',
-  'texas-am': '245',
+  'louisiana monroe': 'ul-monroe-warhawks',
+  'san jose state': 'san-jose-state-spartans',
+  'texas am': 'texas-am-aggies',
+  'ferris state': 'ferris-state-bulldogs',
 };
 
 const GENERIC_SCHOOL_PLACEHOLDER = '/assets/logos/placeholders/generic-school.svg';

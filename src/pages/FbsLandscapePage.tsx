@@ -1,14 +1,18 @@
 import { memo, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from 'react';
 import { Globe2, Search, X } from 'lucide-react';
 import { fbs2026Conferences } from '../data/fbs2026Conferences';
+import { conferenceEras } from '../data/conferences';
 import { historicalNotes } from '../data/historicalNotes';
 import { getSchoolLogo } from '../utils/getSchoolLogo';
+import { trackEvent } from '../utils/trackEvent';
 import { fbsSchoolRegistry } from '../data/fbsSchoolRegistry';
+import type { ConferenceEra, ConferenceSchool } from '../types/content';
 import type { FbsConference, FbsConferenceId, FbsSchool } from '../types/fbs';
 import { clampMapPan, getCenteredMapPan, hasValidMapCoordinates } from '../utils/mapFocus';
 import { projectSchoolCoordinates, usMapViewBox, usNationPath, usStateBordersPath } from '../utils/mapProjection';
 import { HistoricalNotesPanel, SectionHero } from '../components/MuseumComponents';
 import { ConferenceLogo } from '../components/ui/ConferenceLogo';
+import { MarkerLayer } from '../components/map/MarkerLayer';
 import { SharedZoomControls } from '../components/map/SharedZoomControls';
 
 const FOCUS_ZOOM = 1.9;
@@ -19,11 +23,16 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function getMarkerSize(zoom: number) {
-  const maxSize = 34;
-  const minSize = 18;
-  const size = maxSize - (zoom - 1) * 7;
-  return clamp(size, minSize, maxSize);
+function getMarkerSizes(zoom: number) {
+  const outerMax = 42;
+  const outerMin = 26;
+  const logoMax = 30;
+  const logoMin = 20;
+
+  return {
+    outer: clamp(outerMax - (zoom - 1) * 6, outerMin, outerMax),
+    logo: clamp(logoMax - (zoom - 1) * 2, logoMin, logoMax),
+  };
 }
 
 function initials(school: FbsSchool) {
@@ -37,6 +46,108 @@ function initials(school: FbsSchool) {
 
 function getConference(id: FbsConferenceId) {
   return fbs2026Conferences.find((conference) => conference.id === id)!;
+}
+
+function TimelineMapView() {
+  const [selectedEraId, setSelectedEraId] = useState(conferenceEras[conferenceEras.length - 1].id);
+  const [selectedSchoolId, setSelectedSchoolId] = useState('oklahoma');
+  const selectedEra = conferenceEras.find((era) => era.id === selectedEraId) ?? conferenceEras[conferenceEras.length - 1];
+  const selectedSchool = selectedEra.schools.find((school) => school.id === selectedSchoolId) ?? selectedEra.schools.find((school) => school.isOU) ?? selectedEra.schools[0];
+  const selectedIndex = conferenceEras.findIndex((era) => era.id === selectedEra.id);
+  const previousEra = selectedIndex > 0 ? conferenceEras[selectedIndex - 1] : null;
+  const nextEra = selectedIndex < conferenceEras.length - 1 ? conferenceEras[selectedIndex + 1] : null;
+
+  const chooseEra = (era: ConferenceEra) => {
+    trackEvent('change_year', { year: era.years, era: era.id });
+    setSelectedEraId(era.id);
+    setSelectedSchoolId(era.schools.some((school) => school.id === selectedSchoolId) ? selectedSchoolId : 'oklahoma');
+  };
+
+  const chooseSchool = (school: ConferenceSchool) => {
+    trackEvent('select_school', { school: school.id, map: 'timeline' });
+    setSelectedSchoolId(school.id);
+  };
+
+  return (
+    <section className="grid w-full items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,360px)]" aria-label="Timeline View">
+      <div className="space-y-4">
+        <div className="rounded-md border border-charcoal/10 bg-white/78 p-4">
+          <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-brass">Timeline View</p>
+              <h2 className="font-display text-3xl font-bold leading-none text-charcoal">{selectedEra.label}</h2>
+              <p className="mt-1 text-sm font-semibold text-charcoal/62">{selectedEra.years} | {selectedEra.conference}</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => previousEra && chooseEra(previousEra)}
+                disabled={!previousEra}
+                className="min-h-11 rounded-md border border-charcoal/10 bg-cream px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-charcoal transition hover:bg-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-crimson/15 disabled:cursor-not-allowed disabled:opacity-45"
+              >
+                Previous
+              </button>
+              <button
+                type="button"
+                onClick={() => nextEra && chooseEra(nextEra)}
+                disabled={!nextEra}
+                className="min-h-11 rounded-md border border-charcoal/10 bg-charcoal px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-cream transition hover:bg-crimson focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-crimson/15 disabled:cursor-not-allowed disabled:opacity-45"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+          <p className="text-sm leading-6 text-charcoal/68">{selectedEra.description}</p>
+          <div className="mt-4 flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Conference timeline eras">
+            {conferenceEras.map((era) => (
+              <button
+                key={era.id}
+                type="button"
+                onClick={() => chooseEra(era)}
+                aria-pressed={selectedEra.id === era.id}
+                className={`min-h-11 shrink-0 rounded-md px-3 py-2 text-left text-xs font-black uppercase tracking-[0.1em] transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-crimson/15 ${selectedEra.id === era.id ? 'bg-charcoal text-cream' : 'bg-cream text-charcoal/68 hover:bg-white'}`}
+              >
+                <span className="block">{era.label}</span>
+                <span className="block text-[10px] opacity-70">{era.years}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative aspect-[1.15] min-h-[320px] overflow-hidden rounded-md border border-white/10 bg-[#dbe4ea] sm:aspect-[1.35] md:aspect-[1.55] md:min-h-[520px]">
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.42),rgba(219,228,234,0.95))]" />
+          <svg className="absolute inset-0 h-full w-full" viewBox={`0 0 ${usMapViewBox.width} ${usMapViewBox.height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label={`${selectedEra.label} conference map`}>
+            <path d={usNationPath} fill="#f8f9fb" stroke="#323232" strokeWidth={1.6} />
+            <path d={usStateBordersPath} fill="none" stroke="#69757f" strokeWidth={0.8} opacity={0.5} />
+          </svg>
+          <MarkerLayer
+            schools={selectedEra.schools}
+            eraName={selectedEra.label}
+            selectedSchoolId={selectedSchool.id}
+            exploredSchoolIds={[]}
+            addedSchoolIds={selectedEra.addedSchoolIds}
+            onSelectSchool={chooseSchool}
+          />
+          <div className="pointer-events-none absolute bottom-3 left-3 rounded-md bg-white/78 px-3 py-2 text-xs font-semibold text-charcoal/68 backdrop-blur">
+            {selectedEra.schools.length} schools | {selectedEra.years}
+          </div>
+        </div>
+      </div>
+
+      <aside className="mx-auto w-full max-w-[360px] space-y-4 xl:sticky xl:top-32">
+        <section className="rounded-md border border-charcoal/10 bg-white/92 p-5 shadow-exhibit">
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-brass">Historical note</p>
+          <h3 className="mt-1 font-display text-3xl font-bold leading-none text-charcoal">{selectedEra.conference}</h3>
+          <p className="mt-3 text-sm leading-6 text-charcoal/70">{selectedEra.changeSummary}</p>
+        </section>
+        <section className="rounded-md border border-charcoal/10 bg-white/86 p-4">
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-brass">Selected school</p>
+          <h3 className="font-display text-3xl font-bold leading-none text-charcoal">{selectedSchool.name}</h3>
+          <p className="mt-2 text-sm leading-6 text-charcoal/68">{selectedSchool.ouContext}</p>
+        </section>
+      </aside>
+    </section>
+  );
 }
 
 function FbsSchoolLogoImage({
@@ -74,7 +185,7 @@ function FbsSchoolLogoImage({
   return <span className={fallbackClassName}>{initials(school)}</span>;
 }
 
-const FbsMarker = memo(function FbsMarker({ school, selected, allMode, iconSize, touchSize, onSelect }: { school: FbsSchool; selected: boolean; allMode: boolean; iconSize: number; touchSize: number; onSelect: () => void }) {
+const FbsMarker = memo(function FbsMarker({ school, selected, allMode, outerSize, logoSize, touchSize, onSelect }: { school: FbsSchool; selected: boolean; allMode: boolean; outerSize: number; logoSize: number; touchSize: number; onSelect: () => void }) {
   const point = projectSchoolCoordinates(school.latitude, school.longitude);
   if (!point) return null;
 
@@ -94,15 +205,18 @@ const FbsMarker = memo(function FbsMarker({ school, selected, allMode, iconSize,
     >
       <span className="absolute inset-0 rounded-full bg-transparent" aria-hidden="true" />
       <span
-        className={`relative flex items-center justify-center overflow-hidden rounded-full border-2 bg-white text-center font-black leading-none shadow-lg ${allMode ? 'text-[8px]' : 'text-[9px]'} ${selected ? 'border-white ring-4 ring-gold/60' : 'border-white/80'}`}
-        style={{ width: `${iconSize}px`, height: `${iconSize}px`, boxShadow: `0 0 ${selected ? 26 : 12}px ${conference.colorToken}66`, color: conference.colorToken }}
+        className={`relative flex items-center justify-center overflow-hidden rounded-full border-2 bg-[#edf1f4] text-center font-black leading-none shadow-lg ${allMode ? 'text-[8px]' : 'text-[9px]'} ${selected ? 'border-white ring-4 ring-gold/60' : 'border-white/80'}`}
+        style={{ width: `${outerSize}px`, height: `${outerSize}px`, boxShadow: `0 0 ${selected ? 26 : 12}px ${conference.colorToken}66`, color: conference.colorToken }}
       >
         <span className="absolute inset-x-0 bottom-0 h-1" style={{ backgroundColor: conference.colorToken }} />
-        <FbsSchoolLogoImage
-          school={school}
-          imageClassName="h-full w-full bg-white object-contain p-0.5"
-          fallbackClassName="flex h-full w-full items-center justify-center px-1 text-center text-[10px] font-black leading-none"
-        />
+        <span className="absolute rounded-full bg-charcoal/10" style={{ width: `${logoSize}px`, height: `${logoSize}px` }} aria-hidden="true" />
+        <span className="relative z-10 flex items-center justify-center" style={{ width: `${logoSize}px`, height: `${logoSize}px` }}>
+          <FbsSchoolLogoImage
+            school={school}
+            imageClassName="h-full w-full object-contain p-0.5 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"
+            fallbackClassName="flex h-full w-full items-center justify-center px-1 text-center text-[10px] font-black leading-none"
+          />
+        </span>
       </span>
       <span className={`pointer-events-none absolute left-1/2 top-full mt-1 hidden -translate-x-1/2 whitespace-nowrap rounded-sm bg-charcoal/90 px-2 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-white shadow-lg md:block ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'}`}>
         {school.shortName}
@@ -115,9 +229,10 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [viewportSize, setViewportSize] = useState({ width: usMapViewBox.width, height: usMapViewBox.height });
   const [zoom, setZoom] = useState(1);
-  const markerSize = getMarkerSize(zoom);
-  const markerTouchSize = Math.max(44, markerSize + 14);
-  const markerIconSize = markerSize / zoom;
+  const markerSizes = getMarkerSizes(zoom);
+  const markerTouchSize = Math.max(44, markerSizes.outer + 12);
+  const markerOuterSize = markerSizes.outer / zoom;
+  const markerLogoSize = markerSizes.logo / zoom;
   const markerTargetSize = markerTouchSize / zoom;
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
@@ -159,6 +274,7 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
   }, [selectedSchool?.id]);
 
   const selectSchool = (school: FbsSchool) => {
+    trackEvent('select_school', { school: school.id, map: '2026-fbs' });
     onSelectSchool(school);
     focusSchool(school);
   };
@@ -235,7 +351,8 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
               school={school}
               selected={selectedSchool?.id === school.id}
               allMode={selectedConferenceId === 'all'}
-              iconSize={(selectedConferenceId === 'all' ? markerIconSize * 0.82 : markerIconSize)}
+              outerSize={(selectedConferenceId === 'all' ? markerOuterSize * 0.9 : markerOuterSize)}
+              logoSize={markerLogoSize}
               touchSize={markerTargetSize}
               onSelect={() => selectSchool(school)}
             />
@@ -348,6 +465,11 @@ function LandscapeSidePanel({ selectedSchool, selectedConference, visibleSchools
 }
 
 export function FbsLandscapePage() {
+  const [mapView, setMapView] = useState<'current' | 'timeline'>(() => {
+    const preferredView = window.sessionStorage.getItem('preferredFbsView');
+    window.sessionStorage.removeItem('preferredFbsView');
+    return preferredView === 'timeline' ? 'timeline' : 'current';
+  });
   const [selectedConferenceId, setSelectedConferenceId] = useState<FbsConferenceId | 'all'>('all');
   const [schoolSearch, setSchoolSearch] = useState('');
 
@@ -384,6 +506,29 @@ export function FbsLandscapePage() {
         Explore the projected national alignment of every FBS conference beginning in 2026.
       </SectionHero>
       <section className="mb-5 rounded-md border border-charcoal/10 bg-white/78 p-4">
+        <div className="mb-4 flex flex-wrap gap-2" role="tablist" aria-label="Map view selector">
+          <button
+            type="button"
+            onClick={() => setMapView('current')}
+            aria-pressed={mapView === 'current'}
+            className={`min-h-11 rounded-md px-4 py-2 text-xs font-black uppercase tracking-[0.12em] transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-crimson/15 ${mapView === 'current' ? 'bg-charcoal text-cream' : 'bg-cream text-charcoal/68 hover:bg-white'}`}
+          >
+            2026 Map
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent('open_timeline', { source: 'fbs-landscape' });
+              setMapView('timeline');
+            }}
+            aria-pressed={mapView === 'timeline'}
+            className={`min-h-11 rounded-md px-4 py-2 text-xs font-black uppercase tracking-[0.12em] transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-crimson/15 ${mapView === 'timeline' ? 'bg-charcoal text-cream' : 'bg-cream text-charcoal/68 hover:bg-white'}`}
+          >
+            Timeline View
+          </button>
+        </div>
+        {mapView === 'current' ? (
+        <>
         <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-brass">Conference filter</p>
@@ -430,8 +575,15 @@ export function FbsLandscapePage() {
             })}
           </div>
         </details>
+        </>
+        ) : (
+          <div className="rounded-md bg-cream/70 px-3 py-3 text-sm font-semibold text-charcoal/68">Use Timeline View to step through OU’s conference realignment snapshots without changing the clean 2026 default map.</div>
+        )}
       </section>
 
+      {mapView === 'timeline' ? (
+        <TimelineMapView />
+      ) : (
       <div className="grid w-full items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,360px)]">
         <div className="space-y-4">
           <FbsMap schools={visibleSchools} selectedSchool={selectedSchool} selectedConferenceId={selectedConferenceId} onSelectSchool={(school) => setSelectedSchoolId(school.id)} />
@@ -440,6 +592,7 @@ export function FbsLandscapePage() {
           <LandscapeSidePanel selectedSchool={selectedSchool} selectedConference={selectedConference} visibleSchools={visibleSchools} onSelectSchool={(school) => setSelectedSchoolId(school.id)} />
         </div>
       </div>
+      )}
 
       <div className="mt-5">
         <HistoricalNotesPanel title="What Changed in 2026?" notes={historicalNotes['2026']} compact />

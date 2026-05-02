@@ -26,11 +26,16 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function getMarkerSize(zoom: number) {
-  const maxSize = 34;
-  const minSize = 18;
-  const size = maxSize - (zoom - 1) * 7;
-  return clamp(size, minSize, maxSize);
+function getMarkerSizes(zoom: number) {
+  const outerMax = 42;
+  const outerMin = 26;
+  const logoMax = 30;
+  const logoMin = 20;
+
+  return {
+    outer: clamp(outerMax - (zoom - 1) * 6, outerMin, outerMax),
+    logo: clamp(logoMax - (zoom - 1) * 2, logoMin, logoMax),
+  };
 }
 
 function initials(school: FbsSchool) {
@@ -81,7 +86,7 @@ function FbsSchoolLogoImage({
   return <span className={fallbackClassName}>{initials(school)}</span>;
 }
 
-const FbsMarker = memo(function FbsMarker({ school, selected, allMode, iconSize, touchSize, onSelect }: { school: FbsSchool; selected: boolean; allMode: boolean; iconSize: number; touchSize: number; onSelect: () => void }) {
+const FbsMarker = memo(function FbsMarker({ school, selected, allMode, outerSize, logoSize, touchSize, onSelect }: { school: FbsSchool; selected: boolean; allMode: boolean; outerSize: number; logoSize: number; touchSize: number; onSelect: () => void }) {
   const point = projectSchoolCoordinates(school.latitude, school.longitude);
   if (!point) return null;
 
@@ -101,15 +106,18 @@ const FbsMarker = memo(function FbsMarker({ school, selected, allMode, iconSize,
     >
       <span className="absolute inset-0 rounded-full bg-transparent" aria-hidden="true" />
       <span
-        className={`relative flex items-center justify-center overflow-hidden rounded-full border-2 bg-white text-center font-black leading-none shadow-lg ${allMode ? 'text-[8px]' : 'text-[9px]'} ${selected ? 'border-white ring-4 ring-gold/60' : 'border-white/80'}`}
-        style={{ width: `${iconSize}px`, height: `${iconSize}px`, boxShadow: `0 0 ${selected ? 26 : 12}px ${conference.colorToken}66`, color: conference.colorToken }}
+        className={`relative flex items-center justify-center overflow-hidden rounded-full border-2 bg-[#edf1f4] text-center font-black leading-none shadow-lg ${allMode ? 'text-[8px]' : 'text-[9px]'} ${selected ? 'border-white ring-4 ring-gold/60' : 'border-white/80'}`}
+        style={{ width: `${outerSize}px`, height: `${outerSize}px`, boxShadow: `0 0 ${selected ? 26 : 12}px ${conference.colorToken}66`, color: conference.colorToken }}
       >
         <span className="absolute inset-x-0 bottom-0 h-1" style={{ backgroundColor: conference.colorToken }} />
-        <FbsSchoolLogoImage
-          school={school}
-          imageClassName="h-full w-full bg-white object-contain p-0.5"
-          fallbackClassName="flex h-full w-full items-center justify-center px-1 text-center text-[10px] font-black leading-none"
-        />
+        <span className="absolute rounded-full bg-charcoal/10" style={{ width: `${logoSize}px`, height: `${logoSize}px` }} aria-hidden="true" />
+        <span className="relative z-10 flex items-center justify-center" style={{ width: `${logoSize}px`, height: `${logoSize}px` }}>
+          <FbsSchoolLogoImage
+            school={school}
+            imageClassName="h-full w-full object-contain p-0.5 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]"
+            fallbackClassName="flex h-full w-full items-center justify-center px-1 text-center text-[10px] font-black leading-none"
+          />
+        </span>
       </span>
       <span className={`pointer-events-none absolute left-1/2 top-full mt-1 hidden -translate-x-1/2 whitespace-nowrap rounded-sm bg-charcoal/90 px-2 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-white shadow-lg md:block ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'}`}>
         {school.shortName}
@@ -122,9 +130,10 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const [viewportSize, setViewportSize] = useState({ width: usMapViewBox.width, height: usMapViewBox.height });
   const [zoom, setZoom] = useState(1);
-  const markerSize = getMarkerSize(zoom);
-  const markerTouchSize = Math.max(44, markerSize + 14);
-  const markerIconSize = markerSize / zoom;
+  const markerSizes = getMarkerSizes(zoom);
+  const markerTouchSize = Math.max(44, markerSizes.outer + 12);
+  const markerOuterSize = markerSizes.outer / zoom;
+  const markerLogoSize = markerSizes.logo / zoom;
   const markerTargetSize = markerTouchSize / zoom;
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
@@ -242,7 +251,8 @@ function FbsMap({ schools, selectedSchool, selectedConferenceId, onSelectSchool 
               school={school}
               selected={selectedSchool?.id === school.id}
               allMode={selectedConferenceId === 'all'}
-              iconSize={(selectedConferenceId === 'all' ? markerIconSize * 0.82 : markerIconSize)}
+              outerSize={(selectedConferenceId === 'all' ? markerOuterSize * 0.9 : markerOuterSize)}
+              logoSize={markerLogoSize}
               touchSize={markerTargetSize}
               onSelect={() => selectSchool(school)}
             />
